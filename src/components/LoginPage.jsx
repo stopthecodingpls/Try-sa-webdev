@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import FormImage from '../assets/images/FormImage.svg';
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
 
-  const notifysuccess = (msg) => toast.success(msg);
-  const notifyfail = () => toast.error("Account Does Not Exist!");
+  const notifysuccess = (msg) => toast.success(msg, { position: "top-center", toastId: 'success1' });
+  const notifyfail = () => toast.error("Account Does Not Exist!", { position: "top-center" });
+
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let login = localStorage.getItem("login");
+    if(login){
+        navigate("/home");
+    }
+    let loginStatus = localStorage.getItem("loginStatus");
+    if(loginStatus){
+        setError(loginStatus);
+        setTimeout(function(){
+            localStorage.clear();
+            window.location.reload();
+        }, 3000);
+    }
+    setTimeout(function(){
+        setMsg("");
+    }, 5000);
+  }, [msg]);
 
   const handleLogin = async (e) => { 
     e.preventDefault(); // Prevent default form submission behavior
@@ -24,10 +43,15 @@ const LoginPage = ({ setUser }) => {
             password,
         });
         if (response.data.success) {
-            setUser(response.data.user_id);
+            const loadingToat = toast.loading('Loading 🍕🥪🍔', { position: "top-center" ,toastId: 'loading1' });
+            setError("");
+            setTimeout(function(){
+            localStorage.setItem("login", true);
+            localStorage.setItem('email', email);
+            toast.dismiss(loadingToat);
             notifysuccess(`Welcome, ${response.data.firstname}!`); // Show success toast with user's name
-            setMsg(response.data.message); // Set success message
-            navigate('/Home'); // Navigate to Home page 
+            navigate('/Home');// Navigate to Home page 
+            },2000); 
         } else if (response.data.success === false) {
           notifyfail(); // Show error toast
         } else {
