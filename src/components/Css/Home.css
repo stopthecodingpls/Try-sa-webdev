@@ -16,19 +16,19 @@
 }
 
 .chef-image {
-  width: 80%;
+  width: 45%;
   height: auto;
-  max-width: 80%;
+  max-width: 45%;
 }
 
 .home-section h1 {
-  font-size: 3rem;
+  font-size: 7rem;
   margin: 0;
   color: black;
 }
 
 .home-section p {
-  font-size: 1.2rem;
+  font-size: 2.2rem;
   color: #444;
   margin: 10px 0 30px 0;
 }

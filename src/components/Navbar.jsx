@@ -25,21 +25,21 @@ const Navbar = () => {
       </div>
       <ul className={`nav-links ${menuActive ? "active" : ""}`}>
         <li>
-          <a href="HomePage.js">Home</a>
+          <a href="/Home">Home</a>
         </li>
         <li className="recipes">
-          <a href="Recipes.js">Recipes</a>
+          <a>Recipes</a>
           <ul className="dropdown">
             <li>
-              <a href="#own-recipe">Own Recipe</a>
+              <a href="/Own_Recipe">Own Recipe</a>
             </li>
             <li>
-              <a href="#other-recipe">Other Recipe</a>
+              <a href="/Other_Recipe">Other Recipe</a>
             </li>
           </ul>
         </li>
         <li>
-          <a href="About_us.js">About Us</a>
+          <a href="/About_us">About Us</a>
         </li>
         <li>
           <span className="user-name">{firstName}</span>

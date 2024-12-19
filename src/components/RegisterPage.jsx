@@ -31,7 +31,7 @@ const RegisterPage = () => {
     } else {
       try {
         // Check if email already exists
-        const emailCheckResponse = await axios.post('http://localhost/webPHP/checkEmail.php', { email });
+        const emailCheckResponse = await axios.post('http://localhost/webPHP/backend/webPHP/checkEmail.php', { email });
         if (!emailCheckResponse.data.success) {
           setError("Email already exists");
           return;
@@ -45,7 +45,7 @@ const RegisterPage = () => {
 
       try {
         // Send POST request to the backend
-        const response = await axios.post('http://localhost/webPHP/signUp.php', {
+        const response = await axios.post('http://localhost/webPHP/backend/webPHP/signUp.php', {
           firstname,
           lastname,
           email,

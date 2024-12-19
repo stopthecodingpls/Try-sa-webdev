@@ -9,7 +9,7 @@ const HomeSection = () => {
       <Navbar />
       <section className="home-section">
         <h1 className="font-logo">Welcome to Tasty</h1>
-        <p>Home of Food Enthusiasts and Home Cooks</p>
+        <p className="font-logo">Home of Food Enthusiasts and Home Cooks</p>
         <img className="chef-image" src={FormImage} style={{ display: "block", margin: "0 auto" }}></img>
       </section>
     </div>

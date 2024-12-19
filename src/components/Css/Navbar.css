@@ -59,7 +59,7 @@
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   list-style: none;
-  padding: 10px;
+  padding: 0; /* Remove extra padding to align items properly */
   border-radius: 5px;
   min-width: 150px;
   opacity: 0;
@@ -68,12 +68,25 @@
 }
 
 .dropdown li {
-  padding: 5px 0;
+  padding: 10px; /* Adjust padding for spacing */
+  width: 100%; /* Ensure li spans full width */
+  box-sizing: border-box; /* Include padding in the width */
+  border-bottom: 1px solid #ccc; /* Add a line between items */
+}
+
+.dropdown li:last-child {
+  border-bottom: none; /* Remove border from the last item */
+}
+
+.dropdown li:hover {
+  background-color: #726d6dab;
 }
 
 .dropdown li a {
   text-decoration: none;
   color: black;
+  display: block; /* Make anchor tags block-level so they fill the li */
+  width: 100%; /* Ensure anchor spans full width */
 }
 
 .recipes:hover .dropdown {
