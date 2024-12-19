@@ -38,7 +38,7 @@ const LoginPage = () => {
     e.preventDefault(); // Prevent default form submission behavior
     if (email !== "" && password !== "") {
       try {
-        const response = await axios.post('http://localhost/webPHP/backend/webPHP/login.php', {
+        const response = await axios.post('http://localhost/webPHP/login.php', {
             email,
             password,
         });
