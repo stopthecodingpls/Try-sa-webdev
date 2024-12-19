@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="logo">Tasty</div>
+      <div className="font-logo text-4xl">Tasty</div>
       <div className="hamburger" onClick={toggleMenu}>
         ☰
       </div>
