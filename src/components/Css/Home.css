@@ -1,6 +1,11 @@
 .home-section {
   text-align: center;
-  margin: 50px 0;
+  margin: 10px 0px;
+  background-image: url("../../assets/images/BG_image.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 50px 20px;
 }
 
 .home-section h1 {
@@ -19,6 +24,8 @@
   width: 45%;
   height: auto;
   max-width: 45%;
+  display: block;
+  margin: 0 auto;
 }
 
 .home-section h1 {
@@ -33,20 +40,94 @@
   margin: 10px 0 30px 0;
 }
 
+.home-section p.text {
+  font-size: 1.8rem;
+  color: #333;
+  font-style: italic;
+  margin: 50px 0 35px 0;
+  line-height: 1.6;
+}
+
+.bordered-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background: rgba(249, 249, 249, 0.53); /* Use rgba for transparent background */
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  margin: 80px auto;
+  max-width: 85%;
+  flex-wrap: wrap;
+}
+
+.bordered-section img {
+  width: 40%;
+  height: auto;
+  max-width: 40%;
+}
+
+.bordered-section p {
+  font-size: 1.4rem;
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+  flex: 1;
+}
+
 @media (max-width: 768px) {
   .home-section h1 {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
   }
   .home-section p {
     font-size: 1rem;
+  }
+  .bordered-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+    gap: 20px;
+  }
+  .bordered-section img {
+    width: 40%;
+  }
+  .bordered-section p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section h1 {
+    font-size: 4.5rem;
+  }
+  .home-section p {
+    font-size: 1.5rem;
+  }
+  .bordered-section {
+    flex-direction: column;
+    text-align: center;
+  }
+  .bordered-section img {
+    width: 40%;
   }
 }
 
 @media (max-width: 480px) {
   .home-section h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
   .home-section p {
+    font-size: 1.1rem;
+  }
+  .home-section p.text {
     font-size: 0.9rem;
+  }
+  .bordered-section img {
+    width: 40%;
+  }
+  .bordered-section p {
+    font-size: 0.8rem;
   }
 }
