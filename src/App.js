@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import LoginPage from "./components/LoginPage";
-import RegisterPage from "./components/RegisterPage";
-import NoPage from "./components/NoPage";
-import Home from "./components/Home";
-import Protected from "./components/Protected";
+import AddRecipes from "./components/AddRecipes";
 import "./components/Css/App.css";
+import Home from "./components/Home";
+import LoginPage from "./components/LoginPage";
+import NoPage from "./components/NoPage";
+import Protected from "./components/Protected";
+import Recipes from "./components/Recipes";
+import RegisterPage from "./components/RegisterPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,6 +22,8 @@ function App() {
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/home" element={<Protected Component={Home} />} />
+          <Route path="/Recipes" element={<Recipes/>} />
+          <Route path="/AddRecipes" element={<AddRecipes/>} />
           <Route path="*" element={<NoPage />} />
         </Routes>
         </BrowserRouter>
