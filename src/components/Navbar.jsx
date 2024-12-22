@@ -10,11 +10,11 @@ const Navbar = () => {
     setMenuActive(!menuActive);
   };
 
-  const handleLogout = () => { 
+  const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
-  
+
   const firstName = localStorage.getItem("firstName");
 
   return (
@@ -27,16 +27,11 @@ const Navbar = () => {
         <li>
           <a href="/Home">Home</a>
         </li>
-        <li className="recipes">
-          <a>Recipes</a>
-          <ul className="dropdown">
-            <li>
-              <a href="/Own_Recipe">Own Recipe</a>
-            </li>
-            <li>
-              <a href="/Other_Recipe">Other Recipe</a>
-            </li>
-          </ul>
+        <li>
+          <a href="/Recipes">Recipes</a>
+        </li>
+        <li>
+          <a href="/Add_Recipes">Add Recipes</a>
         </li>
         <li>
           <a href="/About_us">About Us</a>
@@ -44,8 +39,10 @@ const Navbar = () => {
         <li>
           <span className="user-name">{firstName}</span>
         </li>
+        <li>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </li>
       </ul>
-      <button className="logout-btn" onClick={handleLogout}>Logout</button>
     </nav>
   );
 };
