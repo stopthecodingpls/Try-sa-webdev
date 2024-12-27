@@ -78,14 +78,14 @@ const LoginPage = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Email</label>
+                <label className="text-gray-800 text-sm mb-1 block">Email<span className="text-red-500">*</span></label>
                 <div className="relative flex items-center">
                   <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Password</label>
+                <label className="text-gray-800 text-sm mb-1 block">Password<span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
                   <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
                 </div>

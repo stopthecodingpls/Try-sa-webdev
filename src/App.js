@@ -10,6 +10,8 @@ import NoPage from "./components/NoPage";
 import Protected from "./components/Protected";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
+import Category from "./components/Category";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -22,8 +24,9 @@ function App() {
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/home" element={<Protected Component={Home} />} />
-          <Route path="/Recipes" element={<Recipes/>} />
-          <Route path="/AddRecipes" element={<AddRecipes/>} />
+          <Route path="/AddRecipes" element={<Protected Component ={AddRecipes} />} />
+          <Route path="/Category" element={<Protected Component = {Category}/>} />
+          <Route path="/category/:category" element={<Protected Component = {Recipes} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
         </BrowserRouter>

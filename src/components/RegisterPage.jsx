@@ -86,14 +86,14 @@ const RegisterPage = () => {
 
               <div className="grid gap-3 mb-6 md:grid-cols-2">
                 <div>
-                  <label className="text-gray-800 text-sm mb-1 block">First name</label>
+                  <label className="text-gray-800 text-sm mb-1 block">First name <span className="text-red-500">*</span></label>
                   <div className="relative flex items-center">
                     <input name="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter first name" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-gray-800 text-sm mb-1 block">Last name</label>
+                  <label className="text-gray-800 text-sm mb-1 block">Last name <span className="text-red-500">*</span></label>
                   <div className="relative flex items-center">
                     <input name="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter last name" />
                   </div>
@@ -101,21 +101,21 @@ const RegisterPage = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Email</label>
+                <label className="text-gray-800 text-sm mb-1 block">Email <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center">
                   <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Password</label>
+                <label className="text-gray-800 text-sm mb-1 block">Password <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
                   <input name="password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Confirm Password</label>
+                <label className="text-gray-800 text-sm mb-1 block">Confirm Password <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
                   <input name="password" value={cpassword} onChange={(e) => setCpassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Confirm password" />
                 </div>
