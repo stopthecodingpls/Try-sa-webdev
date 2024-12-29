@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AboutUs from "./components/AboutUs";
 import AddRecipes from "./components/AddRecipes";
+import Category from "./components/Category";
 import "./components/Css/App.css";
 import Home from "./components/Home";
 import LoginPage from "./components/LoginPage";
@@ -10,8 +12,6 @@ import NoPage from "./components/NoPage";
 import Protected from "./components/Protected";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
-import Category from "./components/Category";
-
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,6 +27,7 @@ function App() {
           <Route path="/AddRecipes" element={<Protected Component ={AddRecipes} />} />
           <Route path="/Category" element={<Protected Component = {Category}/>} />
           <Route path="/category/:category" element={<Protected Component = {Recipes} />} />
+          <Route path="/AboutUs" element={<Protected Component ={AboutUs} />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
         </BrowserRouter>

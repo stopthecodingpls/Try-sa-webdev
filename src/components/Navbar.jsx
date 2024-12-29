@@ -34,7 +34,7 @@ const Navbar = () => {
           <a href="/AddRecipes">Add Recipes</a>
         </li>
         <li>
-          <a href="/About_us">About Us</a>
+          <a href="/AboutUs">About Us</a>
         </li>
         <li>
           <span className="user-name">{firstName}</span>
