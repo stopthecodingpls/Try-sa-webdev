@@ -1,10 +1,13 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import FormImage from "../assets/images/Cooking.svg";
-import './Css/AddRecipes.css';
+import "./Css/AddRecipes.css";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 const YourOwnRecipes = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="page-container">
       <Navbar />
@@ -12,7 +15,12 @@ const YourOwnRecipes = () => {
         <div className="container">
           <h1>Your Own Recipes</h1>
           <p>Create and Share your own recipe to other food enthusiasts and home cooks</p>
-          <button className="add-recipe-btn">Add Recipe</button>
+          <button
+            className="add-recipe-btn"
+            onClick={() => navigate("/RecipeInfo")}
+          >
+            Add Recipe
+          </button>
         </div>
         <img className="chef-image" src={FormImage} alt="Chef illustration" />
       </div>

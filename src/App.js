@@ -10,6 +10,7 @@ import Home from "./components/Home";
 import LoginPage from "./components/LoginPage";
 import NoPage from "./components/NoPage";
 import Protected from "./components/Protected";
+import RecipeInfos from "./components/RecipeInfos";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/home" element={<Protected Component={Home} />} />
           <Route path="/AddRecipes" element={<Protected Component ={AddRecipes} />} />
+          <Route path="/RecipeInfo" element={<RecipeInfos />} />
           <Route path="/Category" element={<Protected Component = {Category}/>} />
           <Route path="/category/:category" element={<Protected Component = {Recipes} />} />
           <Route path="/AboutUs" element={<Protected Component ={AboutUs} />} />

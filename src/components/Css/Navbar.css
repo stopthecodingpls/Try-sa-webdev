@@ -1,8 +1,10 @@
 .navbar {
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
+  z-index: 50;
   background-color: #32DE84;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   position: relative;
