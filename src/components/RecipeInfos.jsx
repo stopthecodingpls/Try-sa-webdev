@@ -11,6 +11,7 @@ const [dishImage, setDishImage] = useState(null);
 const [ingredients, setIngredients] = useState("");
 const [measurements, setMeasurements] = useState("");
 const [instructions, setInstructions] = useState("");
+const [creator, setCreator] = useState("");
 const navigate = useNavigate();
 
 const handleImageUpload = (e) => {
@@ -24,6 +25,7 @@ const notifysuccess = () => toast.success("Recipe submitted successfully!", {
 const notifyfail = () => toast.error("Oh No! Something went wrong", {
     className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
 });
+
 
 const handleSubmit = async (e) => {
     e.preventDefault();

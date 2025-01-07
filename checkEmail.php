@@ -17,6 +17,11 @@ if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
 }
 
+// Check connection
+if ($conn->connect_error) {
+    die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the JSON input
     $data = json_decode(file_get_contents("php://input"), true);

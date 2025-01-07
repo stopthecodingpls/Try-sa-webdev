@@ -13,7 +13,7 @@ import Protected from "./components/Protected";
 import RecipeInfos from "./components/RecipeInfos";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
-
+import UnverifiedAccount from "./components/UnverifiedAccount";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -30,6 +30,7 @@ function App() {
           <Route path="/Category" element={<Protected Component = {Category}/>} />
           <Route path="/category/:category" element={<Protected Component = {Recipes} />} />
           <Route path="/AboutUs" element={<Protected Component ={AboutUs} />} />
+          <Route path="/UnverifiedAccount" element={<UnverifiedAccount />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
         </BrowserRouter>

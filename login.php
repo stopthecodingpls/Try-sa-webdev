@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -11,6 +12,11 @@ $dbname = "webdev";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
+}
 
 // Check connection
 if ($conn->connect_error) {
@@ -32,7 +38,11 @@ if ($method == 'POST') {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
+        
         if (password_verify($password, $user['password']))  { 
+            // Store user information in session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['firstname'] = $user['firstname'];
             echo json_encode(["success" => true, "user_id" => $user['id'], "firstname" => $user['firstname']]);
         } else {
             echo json_encode(["message" => "Incorrect password"]);
