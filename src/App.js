@@ -13,10 +13,9 @@ import Protected from "./components/Protected";
 import RecipeInfos from "./components/RecipeInfos";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
+import Profile from "./components/Profile";
 
 function App() {
-  const [user, setUser] = useState(null);
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -25,11 +24,13 @@ function App() {
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
           <Route path="/home" element={<Protected Component={Home} />} />
-          <Route path="/AddRecipes" element={<Protected Component ={AddRecipes} />} />
+          <Route path="/AddRecipes" element={<Protected Component ={AddRecipes} restrictedRole="food_enthusiast" redirectTo="/home"/>} />
           <Route path="/RecipeInfo" element={<RecipeInfos />} />
           <Route path="/Category" element={<Protected Component = {Category}/>} />
           <Route path="/category/:category" element={<Protected Component = {Recipes} />} />
           <Route path="/AboutUs" element={<Protected Component ={AboutUs} />} />
+          <Route path="/Profile" element={<Protected Component={Profile} restrictedRole="food_enthusiast" redirectTo="/home" />} />
+
           <Route path="*" element={<NoPage />} />
         </Routes>
         </BrowserRouter>

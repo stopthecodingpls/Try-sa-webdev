@@ -24,11 +24,13 @@ if ($method == 'POST') {
     $firstname = $data['firstname'];
     $lastname = $data['lastname'];
     $email = $data['email'];
+    $role = $data['role'];
     $password = password_hash($data['password'], PASSWORD_DEFAULT);
+    $verification_code = $data['verification_code'];
 
     //Prepared statements to prevent SQL injection
-    $stmt = $conn->prepare("INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $firstname, $lastname, $email, $password);
+    $stmt = $conn->prepare("INSERT INTO users (firstname, lastname, email, password, role, verification_code) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $firstname, $lastname, $email, $password, $role, $verification_code);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "User registered successfully"]);

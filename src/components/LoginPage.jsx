@@ -39,19 +39,23 @@ const LoginPage = () => {
     if (email !== "" && password !== "") {
       try {
         const response = await axios.post('http://localhost/webPHP/login.php', {
-            email,
-            password,
+          email,
+          password,
         });
-        if (response.data.success) {
-            const loadingToat = toast.loading('Loading 🍕🥪🍔', { position: "top-center" ,toastId: 'loading1' });
+    
+        // If login is successful
+        if (response.data.success === true) {
+            const loadingToast = toast.loading('Loading 🍕🥪🍔', { position: "top-center", toastId: 'loading1' });
             setError("");
-            setTimeout(function(){
+            setTimeout(() => {
             localStorage.setItem("login", true);
             localStorage.setItem('email', email);
-            toast.dismiss(loadingToat);
+            localStorage.setItem('firstname', response.data.firstname);
+            localStorage.setItem('role', response.data.role); 
+            toast.dismiss(loadingToast);
             notifysuccess(`Welcome, ${response.data.firstname}!`); // Show success toast with user's name
-            navigate('/Home');// Navigate to Home page 
-            },2000); 
+            navigate('/Home'); // Navigate to Home page 
+          }, 2000);
         } else if (response.data.success === false) {
           notifyfail(); // Show error toast
         } else {
@@ -64,9 +68,10 @@ const LoginPage = () => {
       setError("Please enter both email and password");
     }
   };
+  
 
   return (
-    <div className="font-[sans-serif]">
+    <div className="font-[sans-serif] bg-white">
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
         <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
           <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
