@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
@@ -11,6 +11,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCpassword] = useState("");
+  const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -20,6 +21,7 @@ const RegisterPage = () => {
 
   const notifysuccess = () => toast.success("You Can Now Login!");
   const notifyfail = () => toast.error("Oh No! Something went wrong");
+  const notifysent = () => toast.success("Verification Code Sent!");
 
   const navigate = useNavigate();
 
@@ -32,8 +34,15 @@ const RegisterPage = () => {
     return code;
   };
 
+  useEffect(() => {
+    if (isCodeSent) {
+      notifysent();
+    }
+    },[isCodeSent]);
+
   const resendVerificationCode = async () => {
     // Generate and resend verification code
+    notifysent();
     const generatedCode = generateVerificationCode();
     setVerificationCode(generatedCode);
     
@@ -61,6 +70,8 @@ const RegisterPage = () => {
       setError("Whoops! Password Does Not Match");
     } else if (password.length < 8) {
       setError("Password Should be Atleast 8 Characters");
+    }else if (role === "") {
+      setError("Please Select a Role");
     } else if (isCodeSent && verificationInput !== verificationCode.toString()) { // Verify the code
       setError("Incorrect Verification Code");
       return;
@@ -116,6 +127,7 @@ const RegisterPage = () => {
             lastname,
             email,
             password,
+            role,
             verification_code: verificationCode,
           });
 
@@ -183,7 +195,18 @@ const RegisterPage = () => {
                 </div>
               </div>
 
+              <div>
+              <label className="text-gray-800 text-sm mb-1 block">Select Role <span className="text-red-500">*</span></label>
+                <select id="role" value={role} onChange={(e) => setRole(e.target.value)} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2dc978] focus:border-[#2dc978] block w-full p-2.5">
+                  <option value="" disabled>Choose a Role</option>
+                  <option value="chef">Chef or Cook</option>
+                  <option value="food_enthusiast">Food Enthusiast</option>
+                </select>
+              </div>
+              
+
               {isCodeSent && (
+                
                 <div>
                   <label className="text-gray-800 text-sm mb-1 block">Verification Code <span className="text-red-500">*</span></label>
                   <div className="relative flex items-center">

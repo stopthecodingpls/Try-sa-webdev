@@ -43,7 +43,8 @@ if ($method == 'POST') {
             // Store user information in session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['firstname'] = $user['firstname'];
-            echo json_encode(["success" => true, "user_id" => $user['id'], "firstname" => $user['firstname']]);
+            $_SESSION['role'] = $user['role'];
+            echo json_encode(["success" => true, "user_id" => $user['id'], "firstname" => $user['firstname'], "role" => $user['role']]);
         } else {
             echo json_encode(["message" => "Incorrect password"]);
         }

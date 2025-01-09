@@ -12,7 +12,6 @@ const LoginPage = () => {
 
   const notifysuccess = (msg) => toast.success(msg, { position: "top-center", toastId: 'success1' });
   const notifyfail = () => toast.error("Account Does Not Exist!", { position: "top-center" });
-  const notifyVerification = () => toast.loading('Verify Your Email With The Send Code!', { position: "top-center", toastId: 'loading1' });
 
 
   const navigate = useNavigate();
@@ -51,6 +50,8 @@ const LoginPage = () => {
             setTimeout(() => {
             localStorage.setItem("login", true);
             localStorage.setItem('email', email);
+            localStorage.setItem('firstname', response.data.firstname);
+            localStorage.setItem('role', response.data.role); 
             toast.dismiss(loadingToast);
             notifysuccess(`Welcome, ${response.data.firstname}!`); // Show success toast with user's name
             navigate('/Home'); // Navigate to Home page 

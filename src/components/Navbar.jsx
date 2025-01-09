@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "./Css/Navbar.css";
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
+  const [role, setRole] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userRole = localStorage.getItem('role'); 
+    setRole(userRole);
+  }, []);
 
   const toggleMenu = () => {
     setMenuActive(!menuActive);
@@ -30,15 +36,19 @@ const Navbar = () => {
         <li>
           <a href="/Category">Recipes</a>
         </li>
-        <li>
-          <a href="/AddRecipes">Add Recipes</a>
-        </li>
+        {role !== 'food_enthusiast' && (
+          <li>
+            <a href="/AddRecipes">Add Recipes</a>
+          </li>
+        )}
         <li>
           <a href="/AboutUs">About Us</a>
         </li>
+        {role !== 'food_enthusiast' && (
         <li>
-          <span className="user-name">{firstName}</span>
+          <a href="/Profile">Profile</a>
         </li>
+        )}
         <li>
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </li>
