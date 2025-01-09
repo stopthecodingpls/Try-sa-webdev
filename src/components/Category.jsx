@@ -35,7 +35,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
 
         <div className="flex justify-center my-4">
           <img
-            src={`http://localhost/webPHP/uploads/${recipe.dish_image}`}
+            src={`http://localhost/webPHP/${recipe.dish_image}`}
             alt={recipe.recipe_name}
             className="w-full h-60 object-cover rounded-lg mb-4"
             onError={(e) => {
@@ -192,27 +192,28 @@ const CategoryList = () => {
             })}
           </section>
         </div>
-        <div className="recipes-section mt-10">
-          <h2 className="text-3xl font-bold text-center mb-5">Latest Recipes</h2>
+        <div className="mt-12">
+          <h2 className="text-3xl font-bold text-center mb-5 font-logo text-4xl">Latest Recipes</h2>
           {recipes.length === 0 ? (
             <p className="text-center">No recipes available</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex flex-wrap justify-center gap-6">
               {recipes.map((recipe) => {
                 const { id, recipe_name, dish_image } = recipe;
                 const imageUrl = dish_image
-                  ? `http://localhost/webPHP/uploads/${dish_image}`
+                  ? `http://localhost/webPHP/${dish_image}`
                   : "https://via.placeholder.com/150";
                 return (
                   <div
                     className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105"
                     key={id}
+                    style={{ width: "300px" }}
                     onClick={() => openModal(recipe)}
                   >
                     <img
                       src={imageUrl}
                       alt={recipe_name}
-                      className="w-full h-40 object-cover rounded-lg"
+                      className="w-full h-[200px] object-cover rounded-lg mb-4"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "https://via.placeholder.com/150";
