@@ -10,7 +10,7 @@ return (
     <Navbar />
     <div className="wrapper">
         <div className="container">
-            <h1>Tasty</h1>
+            <h1 className="font-logo text-4xl">Tasty</h1>
             <p>Tasty is an interactive website for food lovers and home cooks. It is a hub for finding recipes ranging from quick and easy to 
                 gourmet level. Users can browse a wide variety of dishes, each with detailed instructions and ingredient lists, making cooking 
                 enjoyable and hassle-free. Users can upload their own recipes, allowing them to share their unique ideas with other food lovers and 

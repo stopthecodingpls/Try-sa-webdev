@@ -61,7 +61,7 @@ return (
     <div>
     <Navbar />
     <div className="recipe-info-container">
-        <h1>Recipe Information</h1>
+        <h1 className="font-logo text-4xl">Recipe Information</h1>
         <p>Here you can add detailed information about your recipe.</p>
         <form onSubmit={handleSubmit} className="recipe-form">
         {/* Recipe Name */}

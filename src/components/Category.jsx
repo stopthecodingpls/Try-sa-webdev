@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
-const RecipeModal = ({ recipe, isOpen, onClose }) => {
+const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
   const [rating, setRating] = useState(recipe ? recipe.rating || 0 : 0);
+  const [feedbackText, setFeedbackText] = useState('');
 
   if (!isOpen || !recipe) return null;
 
@@ -26,7 +27,7 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg w-3/4 md:w-1/2 p-8 shadow-lg relative">
+      <div className="bg-white rounded-lg w-3/4 md:w-1/2 max-h-[90vh] overflow-y-auto p-8 shadow-lg relative">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{recipe.recipe_name}</h2>
           <button onClick={onClose} className="text-red-500 font-bold text-lg">X</button>
@@ -62,9 +63,8 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
             <h3 className="font-bold text-lg mb-2">Ingredients</h3>
             <ul className="list-none text-justify">
               {getIngredientsList(recipe).map((item, index) => {
-                  const emoji = "🍴";
-                  return <li key={index}> {emoji} {item.ingredient?.trim()}
-                </li>
+                const emoji = "🍴";
+                return <li key={index}> {emoji} {item.ingredient?.trim()} </li>;
               })}
             </ul>
           </div>
@@ -73,7 +73,7 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
             <h3 className="font-bold text-lg mb-2">Measurements</h3>
             <ul className="list-none text-justify">
               {getIngredientsList(recipe).map((item, index) => (
-                <li key={index} >
+                <li key={index}>
                   {item.measure?.trim() || 'No measurement available'}
                 </li>
               ))}
@@ -85,6 +85,25 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
         <div className="mt-4">
           <h3 className="font-semibold text-lg">Instructions:</h3>
           <p>{recipe.instructions || 'No instructions available'}</p>
+        </div>
+
+        {/* Feedback Form */}
+        <div className="mt-6">
+          <h3 className="font-semibold text-lg mb-2">Leave Feedback</h3>
+          <textarea
+            className="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Share your thoughts about this recipe"
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+          />
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={() => handleFeedbackSubmit(recipe.id, feedbackText, rating)}
+              className="bg-blue-500 text-white p-2 rounded-md"
+            >
+              Submit Feedback
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -138,6 +157,26 @@ const CategoryList = () => {
     setSelectedRecipe(null);
     setIsModalOpen(false);
   };
+
+  const handleFeedbackSubmit = async (recipeId, feedbackText, rating) => {
+    try {
+        const response = await axios.post('http://localhost/webPHP/save_feedback.php', {
+            Recipe_id: recipeId,
+            Feedback: feedbackText,
+            Rating: rating,
+        });
+
+        if (response.data.success) {
+            alert('Feedback submitted successfully!');
+        } else {
+            alert(`Failed to submit feedback: ${response.data.message}`);
+        }
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        alert('Error submitting feedback.');
+    }
+  };
+
 
   return (
     <div>
@@ -196,15 +235,15 @@ const CategoryList = () => {
                           onClick={() => openModal(recipe)}
                         >
                           <div className="recipe-item-img w-full h-40 flex items-center justify-center mb-4">
-                          <img
-                            src={`http://localhost/webPHP/uploads/${recipe.dish_image}`}
-                            alt={recipe.recipe_name}
-                            className="w-full h-60 object-cover rounded-lg mb-4"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = "https://via.placeholder.com/150";
-                            }}
-                          />
+                            <img
+                              src={imageUrl}
+                              alt={recipe.recipe_name}
+                              className="w-full h-60 object-cover rounded-lg mb-4"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "https://via.placeholder.com/150";
+                              }}
+                            />
                           </div>
                           <div className="recipe-item-title text-center">
                             <h3 className="text-lg font-semibold text-gray-800">{recipe_name}</h3>
@@ -225,6 +264,7 @@ const CategoryList = () => {
         recipe={selectedRecipe}
         isOpen={isModalOpen}
         onClose={closeModal}
+        handleFeedbackSubmit={handleFeedbackSubmit}
       />
 
       <Footer />
