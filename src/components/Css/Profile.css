@@ -26,7 +26,7 @@
 }
 
 .profile-section,
-.recipes-section,
+.addedRecipes-section,
 .feedback-section {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
@@ -41,7 +41,7 @@
 }
 
 .profile-section h2,
-.recipes-section h2,
+.addedRecipes-section h2,
 .feedback-section h2 {
     font-size: 2.2em;
     font-weight: bold;
@@ -50,14 +50,14 @@
 }
 
 .profile-section p,
-.recipes-section p,
+.addedRecipes-section p,
 .feedback-section p {
     font-size: 1.1em;
     color: #333;
     margin-bottom: 8px;
 }
 
-.recipes-section ul {
+.addedRecipes-section ul {
     list-style-type: circle;
     padding-left: 20px;
     margin: 10px 0;
@@ -72,24 +72,24 @@
     text-align: left;
 }
 
-.recipe-item {
+.addedRecipe-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
 
-.recipe-name {
+.addedRecipe-name {
     margin-left: 45px;
 }
 
-.recipes-section ul {
+.addedRecipes-section ul {
     list-style-type: none;
     padding-left: 0;
     margin: 10px 0;
 }
 
-.recipes-section li {
+.addedRecipes-section li {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -134,7 +134,7 @@ footer {
     z-index: 1000;
 }
 
-.modal-content {
+.profModal-content {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -181,7 +181,7 @@ button {
     }
 
     .profile-section,
-    .recipes-section,
+    .addedRecipes-section,
     .feedback-section {
         max-width: 100%;
     }
@@ -201,7 +201,7 @@ button {
     }
 
     .profile-section,
-    .recipes-section,
+    .addedRecipes-section,
     .feedback-section {
         max-width: 100%;
     }
@@ -221,7 +221,7 @@ button {
     }
 
     .profile-section h2,
-    .recipes-section h2,
+    .addedRecipes-section h2,
     .feedback-section h2 {
         font-size: 1.6em;
     }
@@ -234,7 +234,7 @@ button {
         width: 80px;
     }
 
-    .modal-content {
+    .profModal-content {
         width: 90%;
     }
 }

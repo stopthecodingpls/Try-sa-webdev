@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import './Css/Recipes.css';
 import Footer from "./Footer";
 import Navbar from "./Navbar";
@@ -52,6 +52,7 @@ const Recipes = () => {
     const modal = document.getElementById("recipeModal");
     if (modal) {
       modal.style.display = "block";
+      document.body.style.overflow = "hidden";
     }
   };
 
@@ -62,6 +63,7 @@ const Recipes = () => {
     const modal = document.getElementById("recipeModal");
     if (modal) {
       modal.style.display = "none";
+      document.body.style.overflow = "auto";
     }
   };
 
@@ -119,7 +121,7 @@ const Recipes = () => {
         </div>
 
         <div className="recipes-header">
-          <h1>Recipes</h1>
+          <h1 className = "font-logo text-5xl pb-5 text-center">Recipes</h1>
           <button className="favorites-button" onClick={() => setShowFavorites(!showFavorites)}>
             {showFavorites ? 'Show All' : 'Show Favorites'}
           </button>

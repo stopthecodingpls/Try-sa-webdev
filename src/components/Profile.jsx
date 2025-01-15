@@ -26,7 +26,7 @@ const ViewProfile = () => {
                 setLoading(false);
             }
         };
-   
+
         fetchProfileData();
     }, []);
 
@@ -34,7 +34,7 @@ const ViewProfile = () => {
         if (!selectedRecipe) return;
         
         try {
-            const response = await fetch(`http://localhost/webPHP/deleteRecipe.php?id=${selectedRecipe}`, {
+            const response = await fetch(`http://localhost/webPHP/delete_recipe.php?id=${selectedRecipe}`, {
                 method: "DELETE",
             });
             
@@ -82,13 +82,13 @@ const ViewProfile = () => {
                         <p>Profile data unavailable.</p>
                     )}
 
-                    <div className="recipes-section">
+                    <div className="addedRecipes-section">
                         <h2 className="font-logo text-4xl">🍽️ Added Recipes</h2>
                         {recipes.length > 0 ? (
                             <ul>
                                 {recipes.map((recipe, index) => (
                                     <li key={index}>
-                                        <span className="recipe-name">🍴{recipe.recipe_name}</span>
+                                        <span className="addedRecipe-name">🍴{recipe.recipe_name}</span>
                                         <button 
                                             onClick={() => openModal(recipe.id)} 
                                             className="delete-button"
@@ -136,7 +136,7 @@ const ViewProfile = () => {
             {/* Modal for Delete Confirmation */}
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="profModal-content">
                         <h3>Are you sure you want to delete this recipe?</h3>
                         <div className="modal-buttons">
                             <button onClick={handleDelete} className="confirm-button">

@@ -127,6 +127,7 @@ body {
     overflow: auto;
     background-color: rgba(0,0,0,0.7);
     padding-top: 60px;
+    overflow: hidden;
 }
 
 .modal-content {
@@ -138,6 +139,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     text-align: center;
+    max-height: 80vh; /* Limit the modal height to 80% of the viewport */
+    overflow-y: auto;
 }
 
 .close {
