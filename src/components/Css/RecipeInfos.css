@@ -17,6 +17,10 @@ body {
     padding: 20px;
     background-color: #f5f5f5;
     text-align: center;
+    background-image: linear-gradient(rgba(128, 128, 128, 0.1), rgba(128, 128, 128, 0.1)), url("../../assets/images/BG_image.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .recipe-info-container h1 {

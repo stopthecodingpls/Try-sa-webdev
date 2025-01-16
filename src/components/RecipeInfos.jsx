@@ -96,11 +96,12 @@ return (
     <div>
     <Navbar />
     <div className="recipe-info-container">
-        <h1 className="font-logo text-4xl">Recipe Information</h1>
-        <p>Here you can add detailed information about your recipe.</p>
         <form onSubmit={handleSubmit} className="recipe-form">
         {/* Recipe Name */}
         <div className="form-group">
+            <h1 className="font-logo text-4xl">Recipe Information</h1>
+            <p>Here you can add detailed information about your recipe.</p>
+            <div className="border-b border-black my-4"></div>
             <label htmlFor="recipeName">Recipe Name:</label>
             <input
                 type="text"

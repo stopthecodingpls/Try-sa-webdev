@@ -13,7 +13,7 @@ const YourOwnRecipes = () => {
       <Navbar />
       <div className="wrapper">
         <div className="container">
-          <h1>Your Own Recipes</h1>
+          <h1 className="font-logo text-5xl">Recipe Information</h1>
           <p>Create and Share your own recipe to other food enthusiasts and home cooks</p>
           <button
             className="add-recipe-btn"
