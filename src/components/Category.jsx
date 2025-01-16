@@ -1,12 +1,30 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
 const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
   const [rating, setRating] = useState(recipe ? recipe.rating || 0 : 0);
   const [feedbackText, setFeedbackText] = useState('');
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (feedbackText.trim() || rating) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [feedbackText, rating, isOpen]);
 
   if (!isOpen || !recipe) return null;
 
@@ -152,6 +170,16 @@ const CategoryList = () => {
   };
 
   const handleFeedbackSubmit = async (recipeId, feedbackText, rating) => {
+    if (!feedbackText.trim()) {
+      toast.error('Feedback cannot be empty or just spaces.');
+      return;
+    }
+  
+    if (!rating) {
+      toast.error('Please provide a rating.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost/webPHP/save_feedback.php', {
         recipe_id: recipeId,

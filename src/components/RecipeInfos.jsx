@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import "./Css/RecipeInfos.css";
@@ -6,58 +6,91 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 const RecipeInfos = () => {
-const [recipeName, setRecipeName] = useState("");
-const [dishImage, setDishImage] = useState(null);
-const [ingredients, setIngredients] = useState("");
-const [measurements, setMeasurements] = useState("");
-const [instructions, setInstructions] = useState("");
-const [creator, setCreator] = useState("");
-const navigate = useNavigate();
+    const [recipeName, setRecipeName] = useState("");
+    const [dishImage, setDishImage] = useState(null);
+    const [ingredients, setIngredients] = useState("");
+    const [measurements, setMeasurements] = useState("");
+    const [instructions, setInstructions] = useState("");
+    const [creator, setCreator] = useState("");
+    const navigate = useNavigate();
 
-const handleImageUpload = (e) => {
-    setDishImage(e.target.files[0]);
-};
+    const handleImageUpload = (e) => {
+        setDishImage(e.target.files[0]);
+    };
 
-const notifysuccess = () => toast.success("Recipe submitted successfully!", {
-    className: 'bg-green-500 text-white font-semibold p-3 rounded-lg shadow-lg',
-});
-
-const notifyfail = () => toast.error("Oh No! Something went wrong", {
-    className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
-});
-
-
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!recipeName || !ingredients || !measurements || !instructions || !dishImage) {
-        notifyfail();
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("recipeName", recipeName);
-    formData.append("dishImage", dishImage);
-    formData.append("ingredients", ingredients);
-    formData.append("measurements", measurements);
-    formData.append("instructions", instructions);
-
-    try {
-        const response = await fetch('http://localhost/webPHP/submit-recipe.php', {
-        method: 'POST',
-        body: formData,
+    const notifysuccess = () => toast.success("Recipe submitted successfully!", {
+        className: 'bg-green-500 text-white font-semibold p-3 rounded-lg shadow-lg',
     });
 
-    if (response.ok) {
-        notifysuccess();
-        navigate('/AddRecipes');
-    } else {
-        notifyfail();
-    }
-    } catch (error) {
-        notifyfail();
-    }
-};
+    const notifyfail = () => toast.error("Oh No! Something went wrong", {
+        className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
+    });
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (recipeName || ingredients || measurements || instructions) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [recipeName, ingredients, measurements, instructions]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const isEmptyOrSpaces = (str) => !str || str.trim().length === 0;
+
+        if (isEmptyOrSpaces(recipeName)) {
+            toast.error("Recipe Name cannot be empty or spaces only!", {
+                className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
+            });
+            return;
+        }
+        if (isEmptyOrSpaces(ingredients)) {
+            toast.error("Ingredients cannot be empty or spaces only!", {
+                className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
+            });
+            return;
+        }
+        if (isEmptyOrSpaces(measurements)) {
+            toast.error("Measurements cannot be empty or spaces only!", {
+                className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
+            });
+            return;
+        }
+        if (isEmptyOrSpaces(instructions)) {
+            toast.error("Instructions cannot be empty or spaces only!", {
+                className: 'bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg',
+            });
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("recipeName", recipeName);
+        formData.append("dishImage", dishImage);
+        formData.append("ingredients", ingredients);
+        formData.append("measurements", measurements);
+        formData.append("instructions", instructions);
+
+        try {
+            const response = await fetch('http://localhost/webPHP/submit-recipe.php', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                notifysuccess();
+                navigate('/AddRecipes');
+            } else {
+                notifyfail();
+            }
+        } catch (error) {
+            notifyfail();
+        }
+    };
 
 return (
     <div>
