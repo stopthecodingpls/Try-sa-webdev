@@ -43,6 +43,13 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
     return ingredients;
   };
 
+  const submitFeedback = async () => {
+    await handleFeedbackSubmit(recipe.id, feedbackText, rating);
+    setFeedbackText('');
+    setRating(0);
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg w-3/4 md:w-1/2 max-h-[90vh] overflow-y-auto p-8 shadow-lg relative">
@@ -111,7 +118,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
           />
           <div className="flex justify-end mt-2">
             <button
-              onClick={() => handleFeedbackSubmit(recipe.id, feedbackText, rating)}
+              onClick={submitFeedback}
               className="bg-blue-500 text-white p-2 rounded-md"
             >
               Submit Feedback
@@ -128,6 +135,8 @@ const CategoryList = () => {
   const [recipes, setRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -165,17 +174,19 @@ const CategoryList = () => {
   };
 
   const closeModal = () => {
+    setFeedbackText('');
+    setRating(0);
     setSelectedRecipe(null);
     setIsModalOpen(false);
   };
 
-  const handleFeedbackSubmit = async (recipeId, feedbackText, Rating) => {
+  const handleFeedbackSubmit = async (recipeId, feedbackText, rating) => {
     if (!feedbackText.trim()) {
       toast.error('Feedback cannot be empty or just spaces.');
       return;
     }
-  
-    if (!Rating) {
+
+    if (!rating) {
       toast.error('Please provide a rating.');
       return;
     }
@@ -184,15 +195,16 @@ const CategoryList = () => {
       const response = await axios.post('http://localhost/webPHP/save_feedback.php', {
         Recipe_id: recipeId,
         Feedback: feedbackText,
-        Rating,
+        Rating: rating,
       });
       if (response.data.success) {
-        alert('Feedback submitted successfully!');
+        toast.success('Feedback submitted successfully!');
+        closeModal();
       } else {
-        alert(`Failed to submit feedback: ${response.data.message}`);
+        toast.error(`Failed to submit feedback: ${response.data.message}`);
       }
     } catch (error) {
-      alert('Error submitting feedback.');
+      toast.error('Error submitting feedback.');
     }
   };
 
@@ -260,6 +272,10 @@ const CategoryList = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         handleFeedbackSubmit={handleFeedbackSubmit}
+        feedbackText={feedbackText}
+        setFeedbackText={setFeedbackText}
+        rating={rating}
+        setRating={setRating}
       />
       <Footer />
     </div>
