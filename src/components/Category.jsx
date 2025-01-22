@@ -169,22 +169,22 @@ const CategoryList = () => {
     setIsModalOpen(false);
   };
 
-  const handleFeedbackSubmit = async (recipeId, feedbackText, rating) => {
+  const handleFeedbackSubmit = async (recipeId, feedbackText, Rating) => {
     if (!feedbackText.trim()) {
       toast.error('Feedback cannot be empty or just spaces.');
       return;
     }
   
-    if (!rating) {
+    if (!Rating) {
       toast.error('Please provide a rating.');
       return;
     }
 
     try {
       const response = await axios.post('http://localhost/webPHP/save_feedback.php', {
-        recipe_id: recipeId,
-        feedback: feedbackText,
-        rating,
+        Recipe_id: recipeId,
+        Feedback: feedbackText,
+        Rating,
       });
       if (response.data.success) {
         alert('Feedback submitted successfully!');
