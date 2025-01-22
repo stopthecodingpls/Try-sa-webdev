@@ -22,8 +22,9 @@ if ($method == 'POST') {
     $ingredients = $_POST['ingredients'] ?? null;
     $measurements = $_POST['measurements'] ?? null;
     $instructions = $_POST['instructions'] ?? null;
+    $creator = $_POST['creator'] ?? null;
 
-    if (!$recipeName || !$ingredients || !$measurements || !$instructions) {
+    if (!$recipeName || !$ingredients || !$measurements || !$instructions || !$creator) {
         die(json_encode(["success" => false, "message" => "Missing required fields"]));
     }
 
@@ -39,8 +40,8 @@ if ($method == 'POST') {
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO recipes (recipe_name, ingredients, measurements, instructions, dish_image) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $recipeName, $ingredients, $measurements, $instructions, $destPath);
+    $stmt = $conn->prepare("INSERT INTO recipes (recipe_name, ingredients, measurements, instructions, dish_image, creator) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $recipeName, $ingredients, $measurements, $instructions, $destPath, $creator);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Recipe added successfully!"]);

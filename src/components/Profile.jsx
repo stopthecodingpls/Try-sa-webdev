@@ -13,13 +13,31 @@ const ViewProfile = () => {
 
     useEffect(() => {
         const fetchProfileData = async () => {
+            const firstname = localStorage.getItem("firstname");
+            if (!firstname) {
+                console.error("Firstname not found in localStorage");
+                setLoading(false);
+                return;
+            }
+
             try {
-                const response = await fetch("http://localhost/webPHP/getProfileData.php");
+                const response = await fetch("http://localhost/webPHP/getProfileData.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ firstname }),
+                });
+
                 const data = await response.json();
-  
-                setUserData(data.user || null);
-                setRecipes(data.recipes || []);
-                setFeedbacks(data.feedbacks || []);
+
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    setUserData(data.user || null);
+                    setRecipes(data.recipes || []);
+                    setFeedbacks(data.feedbacks || []);
+                }
             } catch (error) {
                 console.error("Error fetching profile data:", error);
             } finally {
