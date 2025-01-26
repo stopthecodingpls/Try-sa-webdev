@@ -15,15 +15,57 @@ if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
 }
 
-$query = "SELECT id, recipe_name, ingredients, measurements, instructions, dish_image FROM recipes";
+// Fetch recipes along with their reviews
+$query = "
+    SELECT 
+        r.id AS recipe_id, 
+        r.recipe_name, 
+        r.ingredients, 
+        r.measurements, 
+        r.instructions, 
+        r.dish_image,
+        rv.Ratings,
+        rv.Feedback
+    FROM 
+        recipes r
+    LEFT JOIN 
+        review rv
+    ON 
+        r.id = rv.Recipe_id
+";
+
 $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
     $recipes = [];
+    
+    // Group reviews by recipe
     while ($row = $result->fetch_assoc()) {
-        $recipes[] = $row;
+        $recipeId = $row['recipe_id'];
+        
+        if (!isset($recipes[$recipeId])) {
+            $recipes[$recipeId] = [
+                "id" => $row["recipe_id"],
+                "recipe_name" => $row["recipe_name"],
+                "ingredients" => $row["ingredients"],
+                "measurements" => $row["measurements"],
+                "instructions" => $row["instructions"],
+                "dish_image" => $row["dish_image"],
+                "feedback" => []
+            ];
+        }
+
+        // Append review only if it's not null
+        if (!empty($row["Ratings"]) || !empty($row["Feedback"])) {
+            $recipes[$recipeId]["feedback"][] = [
+                "rating" => $row["Ratings"],
+                "feedback" => $row["Feedback"]
+            ];
+        }
     }
-    echo json_encode($recipes);
+
+    // Reindex to return a proper array
+    echo json_encode(array_values($recipes));
 } else {
     echo json_encode([]);
 }

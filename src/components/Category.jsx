@@ -32,12 +32,14 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
     let ingredients = [];
     const ingredientsArray = recipe.ingredients ? recipe.ingredients.split(',') : [];
     const measurementsArray = recipe.measurements ? recipe.measurements.split(',') : [];
+    const instructionsArray = recipe.instructions ? recipe.instructions.split(',') : [];
 
     for (let i = 0; i < ingredientsArray.length; i++) {
       const ingredient = ingredientsArray[i];
       const measure = measurementsArray[i];
+      const instructions = instructionsArray[i];
       if (ingredient && ingredient.trim() !== '') {
-        ingredients.push({ ingredient, measure });
+        ingredients.push({ ingredient, measure, instructions });
       }
     }
     return ingredients;
@@ -52,7 +54,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg w-3/4 md:w-1/2 max-h-[90vh] overflow-y-auto p-8 shadow-lg relative">
+      <div className="bg-white rounded-lg w-4/5 md:w-3/4 lg:w-[60%] max-h-[90vh] overflow-y-auto p-8 shadow-lg relative border-4 border-green-500">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{recipe.recipe_name}</h2>
           <button onClick={onClose} className="text-red-500 font-bold text-lg">X</button>
@@ -62,7 +64,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
           <img
             src={`http://localhost/webPHP/${recipe.dish_image}`}
             alt={recipe.recipe_name}
-            className="w-full h-60 object-cover rounded-lg mb-4"
+            className="w-90 h-80 object-cover rounded-lg mb-4"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "https://via.placeholder.com/150";
@@ -84,28 +86,83 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
 
         <div className="flex gap-4 my-6">
           <div className="p-4 bg-[#ACE1AF] rounded-md shadow-md w-1/2">
-            <h3 className="font-bold text-lg mb-2">Ingredients</h3>
-            <ul className="list-none text-justify">
+            <h3 className="font-bold text-center mb-2">Ingredients</h3>
+            <ul className="space-y-2">
               {getIngredientsList(recipe).map((item, index) => (
-                <li key={index}>🍴 {item.ingredient?.trim()}</li>
+                <li
+                  key={index}
+                  className="bg-white p-2 rounded-md shadow-md flex items-center justify-between"
+                >
+                  <span className="text-gray-800">🍴 {item.ingredient?.trim()}</span>
+                </li>
               ))}
             </ul>
           </div>
+
           <div className="p-4 bg-[#ACE1AF] rounded-md shadow-md w-1/2">
-            <h3 className="font-bold text-lg mb-2">Measurements</h3>
-            <ul className="list-none text-justify">
+            <h3 className="font-bold text-center mb-2">Measurements</h3>
+            <ul className="space-y-2">
               {getIngredientsList(recipe).map((item, index) => (
-                <li key={index}>
-                  {item.measure?.trim() || 'No measurement available'}
+                <li
+                  key={index}
+                  className="bg-white p-2 rounded-md shadow-md flex items-center justify-between"
+                >
+                  <span className="text-gray-800">{item.measure?.trim() || 'No measurement available'}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="mt-4">
-          <h3 className="font-semibold text-lg">Instructions:</h3>
-          <p>{recipe.instructions || 'No instructions available'}</p>
+        <div className="p-4 bg-[#ACE1AF] rounded-md shadow-md w-1/8">
+          <h3 className="font-bold text-center mb-2">Instructions:</h3>
+          <ul className="space-y-2">
+            {getIngredientsList(recipe).map((item, index) => (
+              <li
+                key={index}
+                className="bg-white p-2 rounded-md shadow-md flex items-center justify-between"
+              >
+                <span className="text-gray-800">{item.instructions?.trim() || 'No measurement available'}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="font-semibold text-lg">Ratings and Feedback:</h3>
+          {recipe.feedback && recipe.feedback.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {recipe.feedback.slice(0, 4).map((item, index) => (
+                  <div key={index} className="p-4 bg-[#ACE1AF] rounded-md my-2">
+                    <ul className="space-y-2">
+                      <li><strong>Rating:</strong>
+                        {/* Render the stars dynamically */}
+                        {Array.from({ length: item.rating }).map((_, starIndex) => (
+                          <span key={starIndex} className="text-black-500">★</span>
+                        ))}
+                      </li>
+                      <li><strong>Feedback:</strong> {item.feedback}</li>
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              {recipe.feedback.length > 4 && (
+                <div className="flex justify-center mt-4">
+                  <button className="bg-[#ACE1AF] text-black px-60 py-2 rounded-md flex items-center justify-center space-x-3">
+                    <span className="w-6 h-6 bg-white text-black rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                    <span><b>See more</b></span>
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p>No feedback available yet.</p>
+          )}
         </div>
 
         <div className="mt-6">
@@ -171,6 +228,7 @@ const CategoryList = () => {
   const openModal = (recipe) => {
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
+    document.body.style.overflow = 'hidden'; // Disable body scrolling
   };
 
   const closeModal = () => {
@@ -178,6 +236,7 @@ const CategoryList = () => {
     setRating(0);
     setSelectedRecipe(null);
     setIsModalOpen(false);
+    document.body.style.overflow = 'auto'; // Re-enable body scrolling
   };
 
   const handleFeedbackSubmit = async (recipeId, feedbackText, rating) => {
@@ -200,12 +259,29 @@ const CategoryList = () => {
       if (response.data.success) {
         toast.success('Feedback submitted successfully!');
         closeModal();
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       } else {
         toast.error(`Failed to submit feedback: ${response.data.message}`);
       }
     } catch (error) {
       toast.error('Error submitting feedback.');
     }
+  };
+
+  const calculateAverageRating = (feedback) => {
+    if (Array.isArray(feedback) && feedback.length > 0) {
+      const validRatings = feedback
+        .map((item) => parseFloat(item.rating))
+        .filter((rating) => !isNaN(rating));
+
+      if (validRatings.length === 0) return 0;
+
+      const totalRating = validRatings.reduce((acc, rating) => acc + rating, 0);
+      return (totalRating / validRatings.length).toFixed(1);
+    }
+    return 0;
   };
 
   return (
@@ -239,10 +315,11 @@ const CategoryList = () => {
           ) : (
             <div className="flex flex-wrap justify-center gap-6">
               {recipes.map((recipe) => {
-                const { id, recipe_name, dish_image } = recipe;
+                const { id, recipe_name, dish_image, feedback } = recipe;
                 const imageUrl = dish_image
                   ? `http://localhost/webPHP/${dish_image}`
                   : "https://via.placeholder.com/150";
+                const averageRating = calculateAverageRating(feedback);
                 return (
                   <div
                     className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105"
@@ -260,6 +337,26 @@ const CategoryList = () => {
                       }}
                     />
                     <h3 className="text-lg font-semibold text-gray-800">{recipe_name}</h3>
+                    <div className="text-sm text-gray-600 flex items-center gap-1">
+                      <span>Rating:</span>
+                      {averageRating > 0 ? (
+                        <div className="flex items-center">
+                          {Array.from({ length: 5 }).map((_, index) => (
+                            <span
+                              key={index}
+                              className={`text-xl ${
+                                index < Math.round(averageRating) ? 'text-yellow-500' : 'text-gray-400'
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                          <span className="ml-2">({averageRating})</span>
+                        </div>
+                      ) : (
+                        <span>No ratings yet</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
