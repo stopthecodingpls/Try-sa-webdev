@@ -18,17 +18,38 @@ if ($conn->connect_error) {
 if (isset($_GET['id'])) {
     $recipe_id = $_GET['id'];
 
-    $deleteQuery = "DELETE FROM recipes WHERE id = ?";
-    $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param("i", $recipe_id);
+    // Start a transaction to ensure both operations are atomic
+    $conn->begin_transaction();
 
-    if ($stmt->execute()) {
-        echo json_encode(["message" => "Recipe deleted successfully"]);
-    } else {
-        echo json_encode(["error" => "Failed to delete recipe"]);
+    try {
+        // Delete feedback and ratings associated with the recipe
+        $deleteReviewsQuery = "DELETE FROM review WHERE recipe_id = ?";
+        $stmtReviews = $conn->prepare($deleteReviewsQuery);
+        $stmtReviews->bind_param("i", $recipe_id);
+        if (!$stmtReviews->execute()) {
+            throw new Exception("Failed to delete reviews");
+        }
+
+        // Delete the recipe itself
+        $deleteRecipeQuery = "DELETE FROM recipes WHERE id = ?";
+        $stmtRecipe = $conn->prepare($deleteRecipeQuery);
+        $stmtRecipe->bind_param("i", $recipe_id);
+        if (!$stmtRecipe->execute()) {
+            throw new Exception("Failed to delete recipe");
+        }
+
+        // Commit the transaction
+        $conn->commit();
+
+        echo json_encode(["message" => "Recipe and associated reviews deleted successfully"]);
+
+        $stmtReviews->close();
+        $stmtRecipe->close();
+    } catch (Exception $e) {
+        // Rollback the transaction if any query fails
+        $conn->rollback();
+        echo json_encode(["error" => $e->getMessage()]);
     }
-
-    $stmt->close();
 } else {
     echo json_encode(["error" => "Recipe ID not provided"]);
 }

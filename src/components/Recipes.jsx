@@ -151,17 +151,7 @@ const Recipes = () => {
               <span className="close" onClick={closeModal}>&times;</span>
               <h2>{recipeDetails.strMeal}</h2>
               <img src={recipeDetails.strMealThumb} alt={recipeDetails.strMeal} className="modal-image" />
-              <div className="rating">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={`star ${rating >= star ? 'filled' : ''}`}
-                    onClick={() => handleRatingClick(star)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
+              <br></br>
 
               <div className="flex gap-4">
             {/* Ingredients Box */}
@@ -187,8 +177,18 @@ const Recipes = () => {
               </ul>
             </div>
           </div>
-              <h3>Instructions:</h3>
-              <p>{recipeDetails.strInstructions}</p>
+          <br></br>
+          
+            <div className="p-4 bg-[#ACE1AF] rounded-md shadow-md w-1/8">
+              <h3 className="font-bold text-center mb-2">Instructions:</h3>
+                <ul className="list-none text-justify">
+                  {recipeDetails.strInstructions.split(". ").map((step, index) => (
+                      step.trim() && (
+                        <li key={index} className="p-2 bg-white rounded-md shadow-sm mb-2">{step}.</li>
+                      )
+                    ))}
+                </ul>
+              </div>
             </div>
           </div>
         )}

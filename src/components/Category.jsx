@@ -8,6 +8,7 @@ import Navbar from './Navbar';
 const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
   const [rating, setRating] = useState(recipe ? recipe.rating || 0 : 0);
   const [feedbackText, setFeedbackText] = useState('');
+  const [showAllFeedback, setShowAllFeedback] = useState(false);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -122,7 +123,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
                 key={index}
                 className="bg-white p-2 rounded-md shadow-md flex items-center justify-between"
               >
-                <span className="text-gray-800">{item.instructions?.trim() || 'No measurement available'}</span>
+                <span className="text-gray-800">{item.instructions?.trim() || 'No instructions available'}</span>
               </li>
             ))}
           </ul>
@@ -133,29 +134,32 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
           {recipe.feedback && recipe.feedback.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {recipe.feedback.slice(0, 4).map((item, index) => (
-                  <div key={index} className="p-4 bg-[#ACE1AF] rounded-md my-2">
-                    <ul className="space-y-2">
-                      <li><strong>Rating:</strong>
-                        {/* Render the stars dynamically */}
-                        {Array.from({ length: item.rating }).map((_, starIndex) => (
-                          <span key={starIndex} className="text-black-500">★</span>
-                        ))}
-                      </li>
-                      <li><strong>Feedback:</strong> {item.feedback}</li>
-                    </ul>
-                  </div>
-                ))}
+                {recipe.feedback
+                  .slice(0, showAllFeedback ? recipe.feedback.length : 4)
+                  .map((item, index) => (
+                    <div key={index} className="p-4 bg-[#ACE1AF] rounded-md my-2">
+                      <ul className="space-y-2">
+                        <li>
+                          <strong>Rating:</strong>
+                          {Array.from({ length: item.rating }).map((_, starIndex) => (
+                            <span key={starIndex} className="text-black-500">★</span>
+                          ))}
+                        </li>
+                        <li><strong>Feedback:</strong> {item.feedback}</li>
+                      </ul>
+                    </div>
+                  ))}
               </div>
               {recipe.feedback.length > 4 && (
                 <div className="flex justify-center mt-4">
-                  <button className="bg-[#ACE1AF] text-black px-60 py-2 rounded-md flex items-center justify-center space-x-3">
+                  <button 
+                    onClick={() => setShowAllFeedback(!showAllFeedback)}
+                    className="bg-[#ACE1AF] text-black px-60 py-2 rounded-md flex items-center justify-center space-x-3"
+                  >
                     <span className="w-6 h-6 bg-white text-black rounded-full flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                      {showAllFeedback ? '▲' : '▼'}
                     </span>
-                    <span><b>See more</b></span>
+                    <span><b>{showAllFeedback ? 'See less' : 'See more'}</b></span>
                   </button>
                 </div>
               )}

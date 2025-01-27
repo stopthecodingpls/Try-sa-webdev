@@ -63,13 +63,53 @@
     margin: 10px 0;
 }
 
+.feedback-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.feedback-section h2 {
+    grid-column: span 2;
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.feedback-section button {
+    grid-column: span 2;
+    margin-bottom: 5px;
+    display: flex;
+    background-color: #32de84;
+    justify-content: center;
+    align-items: center;
+}
+
+.feedback-section button:hover {
+    background-color: #2abe72;
+    transition: background-color 0.3s ease;
+}
+
 .feedback-item {
-    margin-bottom: 15px;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #fff3e0;
+    background-color: #32de84;
     text-align: left;
+}
+
+.feedback-item p {
+    margin: 0.5rem 0;
+    color: #333;
 }
 
 .addedRecipe-item {
@@ -120,7 +160,6 @@ footer {
     margin-top: auto;
 }
 
-/* Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -168,7 +207,6 @@ button {
     border-radius: 5px;
 }
 
-/* Media Queries */
 @media (max-width: 1024px) {
     .view-wrapper {
         gap: 10px;
@@ -204,6 +242,11 @@ button {
     .addedRecipes-section,
     .feedback-section {
         max-width: 100%;
+    }
+
+    .feedback-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
     }
 
     h2 {

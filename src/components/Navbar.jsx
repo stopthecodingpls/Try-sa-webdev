@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Css/Navbar.css";
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [role, setRole] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const userRole = localStorage.getItem('role'); 
@@ -23,6 +24,8 @@ const Navbar = () => {
 
   const firstName = localStorage.getItem("firstName");
 
+  const isActive = (path) => location.pathname === path ? "active-link" : "";
+
   return (
     <nav className="navbar">
       <div className="font-logo text-4xl">Tasty</div>
@@ -30,22 +33,22 @@ const Navbar = () => {
         ☰
       </div>
       <ul className={`nav-links ${menuActive ? "active" : ""}`}>
-        <li>
+        <li className={isActive("/Home")}>
           <a href="/Home">Home</a>
         </li>
-        <li>
+        <li className={isActive("/Category")}>
           <a href="/Category">Recipes</a>
         </li>
         {role !== 'food_enthusiast' && (
-          <li>
+          <li className={isActive("/AddRecipes")}>
             <a href="/AddRecipes">Add Recipes</a>
           </li>
         )}
-        <li>
+        <li className={isActive("/AboutUs")}>
           <a href="/AboutUs">About Us</a>
         </li>
         {role !== 'food_enthusiast' && (
-        <li>
+        <li className={isActive("/Profile")}>
           <a href="/Profile">Profile</a>
         </li>
         )}

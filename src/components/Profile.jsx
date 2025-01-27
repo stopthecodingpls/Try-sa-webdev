@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 import "./Css/Profile.css";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
@@ -10,6 +11,10 @@ const ViewProfile = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
+    const [visibleFeedbackCount, setVisibleFeedbackCount] = useState(4);
+    const [isEditing, setIsEditing] = useState(false);
+    const [updatedFirstName, setUpdatedFirstName] = useState("");
+    const [updatedLastName, setUpdatedLastName] = useState("");
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -50,20 +55,26 @@ const ViewProfile = () => {
 
     const handleDelete = async () => {
         if (!selectedRecipe) return;
-        
+    
         try {
             const response = await fetch(`http://localhost/webPHP/delete_recipe.php?id=${selectedRecipe}`, {
                 method: "DELETE",
             });
-            
-            if (response.ok) {
+    
+            const data = await response.json();
+    
+            if (response.ok && data.message) {
                 setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== selectedRecipe));
                 setShowModal(false);
+                toast.success(data.message);
+                window.location.reload();
             } else {
-                console.error("Failed to delete recipe");
+                console.error("Failed to delete recipe:", data.error);
+                toast.error(data.error || "Failed to delete recipe");
             }
         } catch (error) {
             console.error("Error deleting recipe:", error);
+            toast.error("An error occurred while deleting the recipe.");
         }
     };
 
@@ -75,6 +86,68 @@ const ViewProfile = () => {
     const closeModal = () => {
         setShowModal(false);
         setSelectedRecipe(null);
+    };
+
+    const calculateAverageRating = (feedback) => {
+        if (Array.isArray(feedback) && feedback.length > 0) {
+            const validRatings = feedback
+                .map((item) => parseFloat(item.rating))
+                .filter((rating) => !isNaN(rating));
+
+            if (validRatings.length === 0) return 0;
+            const totalRating = validRatings.reduce((acc, rating) => acc + rating, 0);
+            return (totalRating / validRatings.length).toFixed(1);
+        }
+        return 0;
+    };
+
+    const toggleFeedbackVisibility = () => {
+        if (visibleFeedbackCount === 4) {
+            setVisibleFeedbackCount(feedbacks.length);
+        } else {
+            setVisibleFeedbackCount(4);
+        }
+    };
+
+    const handleEdit = () => {
+        setIsEditing(true);
+        setUpdatedFirstName(userData.firstname);
+        setUpdatedLastName(userData.lastname);
+    };
+
+    const handleSave = async () => {
+        try {
+            const response = await fetch("http://localhost/webPHP/updateProfile.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                    firstname: updatedFirstName, 
+                    lastname: updatedLastName, 
+                    email: userData.email 
+                }),
+            });
+
+            if (response.ok) {
+                setUserData((prevData) => ({ 
+                    ...prevData, 
+                    firstname: updatedFirstName, 
+                    lastname: updatedLastName 
+                }));
+                setIsEditing(false);
+                toast.success("Profile updated successfully!");
+            } else {
+                toast.error("Failed to update profile.");
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            toast.error("An error occurred. Please try again.");
+        }
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
     };
 
     if (loading) {
@@ -90,11 +163,44 @@ const ViewProfile = () => {
                         <div className="profile-section">
                             <h2 className="font-logo text-4xl">👨‍🍳 Profile Information</h2>
                             <p>
-                                <strong>Name:</strong> {userData.firstname} {userData.lastname}
+                                <strong>First name: </strong>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={updatedFirstName}
+                                        onChange={(e) => setUpdatedFirstName(e.target.value)}
+                                        className="border-2 border-black px-2 rounded"
+                                    />
+                                ) : (
+                                    ` ${userData.firstname}`
+                                )}
+                            </p>
+                            <p>
+                                <strong>Last name: </strong>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={updatedLastName}
+                                        onChange={(e) => setUpdatedLastName(e.target.value)}
+                                        className="border-2 border-black px-2 rounded"
+                                    />
+                                ) : (
+                                    ` ${userData.lastname}`
+                                )}
                             </p>
                             <p>
                                 <strong>Email:</strong> {userData.email}
                             </p>
+                            <div className="button-container text-right mr-2">
+                                {isEditing ? (
+                                    <>
+                                        <button onClick={handleSave} className="save-button bg-green-400 text-white py-2 px-6 rounded">Save</button>
+                                        <button onClick={handleCancel} className="cancel-button bg-red-500 text-white py-2 px-4 rounded">Cancel</button>
+                                    </>
+                                ) : (
+                                    <button onClick={handleEdit} className="edit-button bg-green-400 text-white py-2 px-7 rounded">Edit</button>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <p>Profile data unavailable.</p>
@@ -104,17 +210,28 @@ const ViewProfile = () => {
                         <h2 className="font-logo text-4xl">🍽️ Added Recipes</h2>
                         {recipes.length > 0 ? (
                             <ul>
-                                {recipes.map((recipe, index) => (
-                                    <li key={index}>
-                                        <span className="addedRecipe-name">🍴{recipe.recipe_name}</span>
-                                        <button 
-                                            onClick={() => openModal(recipe.id)} 
-                                            className="delete-button"
-                                        >
-                                            Delete
-                                        </button>
-                                    </li>
-                                ))}
+                                {recipes.map((recipe, index) => {
+                                    const recipeFeedbacks = feedbacks.filter(feedback => feedback.Recipe_id === recipe.id);
+
+                                    const averageRating = calculateAverageRating(recipeFeedbacks);
+
+                                    return (
+                                        <li key={index}>
+                                            <span className="addedRecipe-name">
+                                                🍴<b>{recipe.recipe_name}{" "}</b>
+                                                <span style={{ fontSize: "0.9em", color: "black" }}>
+                                                    ({averageRating > 0 ? `${averageRating}/5` : "No Ratings"})
+                                                </span>
+                                            </span>
+                                            <button
+                                                onClick={() => openModal(recipe.id)}
+                                                className="delete-button"
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         ) : (
                             <p>No recipes added.</p>
@@ -125,10 +242,30 @@ const ViewProfile = () => {
                     <div className="feedback-section">
                         <h2 className="font-logo text-4xl">⭐ Feedbacks</h2>
                         {feedbacks.length > 0 ? (
-                            feedbacks.map((feedback, index) => {
+                            feedbacks.slice(0, visibleFeedbackCount).map((feedback, index) => {
                                 const recipeName = recipes.find(
                                     recipe => recipe.id === feedback.Recipe_id
                                 )?.recipe_name || "Unknown Recipe";
+
+                                const renderStars = (rating) => {
+                                    const totalStars = 5;
+                                    const filledStars = Math.round(rating);
+                                    const emptyStars = totalStars - filledStars;
+                                    return (
+                                        <>
+                                            {Array(filledStars).fill("★").map((star, i) => (
+                                                <span key={`filled-${i}`} className="filled-star">
+                                                    {star}
+                                                </span>
+                                            ))}
+                                            {Array(emptyStars).fill("☆").map((star, i) => (
+                                                <span key={`empty-${i}`} className="empty-star">
+                                                    {star}
+                                                </span>
+                                            ))}
+                                        </>
+                                    );
+                                };
 
                                 return (
                                     <div key={index} className="feedback-item">
@@ -139,13 +276,21 @@ const ViewProfile = () => {
                                             <strong>Feedback:</strong> {feedback.text}
                                         </p>
                                         <p>
-                                            <strong>Rating:</strong> {feedback.rating}/5
+                                            <strong>Rating:</strong> {renderStars(feedback.rating)}
                                         </p>
                                     </div>
                                 );
                             })
                         ) : (
                             <p>No feedback available.</p>
+                        )}
+                        {feedbacks.length > 4 && (
+                            <button 
+                                onClick={toggleFeedbackVisibility} 
+                                className="text-black font-semibold py-2 px-6 w-full max-w-sm mx-auto rounded-3xl transition-all duration-200 shadow-md text-center"
+                            >
+                                {visibleFeedbackCount === 4 ? "See More" : "See Less"}
+                            </button>
                         )}
                     </div>
                 </div>

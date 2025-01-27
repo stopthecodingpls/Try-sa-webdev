@@ -39,6 +39,15 @@
   text-decoration: none;
   color: black;
   font-weight: bold;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+.nav-links .active-link a {
+  color: #25b76e;
+}
+
+.nav-links a:hover {
+  color: #000000;
 }
 
 .nav-links .logout-btn {
