@@ -4,6 +4,8 @@ import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import SignUpImage from '../assets/images/formimageReg.svg';
+import validator from "validator";
+
 
 const RegisterPage = () => {
   const [firstname, setFirstname] = useState("");
@@ -14,10 +16,13 @@ const RegisterPage = () => {
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
+  const [expirationTime, setExpirationTime] = useState(null);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationInput, setVerificationInput] = useState(""); // New state for user input
   const [message, setMessage] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false); // Flag to indicate if the code has been sent
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordC, setShowPasswordC] = useState(false);
 
   const notifysuccess = () => toast.success("You Can Now Login!");
   const notifyfail = () => toast.error("Oh No! Something went wrong");
@@ -41,10 +46,36 @@ const RegisterPage = () => {
     },[isCodeSent]);
 
   const resendVerificationCode = async () => {
+    const currentTime = Date.now();
+    
+    if (expirationTime && currentTime < expirationTime) {
+      const updateRemainingTime = () => {
+        const newCurrentTime = Date.now();
+        const remainingTime = Math.ceil((expirationTime - newCurrentTime) / 1000);
+
+        if (remainingTime > 0) {
+            setError(`Please wait ${remainingTime} seconds before resending the code.`);
+        } else {
+            clearInterval(timerId);
+            setError(null); // Clear the error message once the timer ends
+        }
+    };
+
+    // Start a timer SalamatGPT
+    updateRemainingTime(); 
+    const timerId = setInterval(updateRemainingTime, 1000);
+
+    return;
+}
+
+ 
     // Generate and resend verification code
     notifysent();
     const generatedCode = generateVerificationCode();
     setVerificationCode(generatedCode);
+
+    const newExpirationTime = Date.now() + 3 * 60 * 1000; //5 minitues
+    setExpirationTime(newExpirationTime);
     
     // Send the verification code to the email
     try {
@@ -54,9 +85,9 @@ const RegisterPage = () => {
         { name: firstname, message: generatedCode, to_email: email },
         publicKey
       );
-      setMessage("Verification email resent successfully!");
+      setMessage("Verification code resent successfully!");
     } catch (error) {
-      setMessage("Failed to resend verification email.");
+      setMessage("Failed to resend verification code.");
     }
   };
 
@@ -64,7 +95,7 @@ const RegisterPage = () => {
     e.preventDefault(); // Prevent default form submission behavior
 
     // Validate form inputs
-    if (firstname === "" || lastname === "" || email === "" || password === "" || cpassword === "") {
+    if (firstname === "" || lastname === "" || email === "" || password === "" || cpassword === "" || role === "") {
       setError("Please Input All Required Fields");
     } else if (password !== cpassword) {
       setError("Whoops! Password Does Not Match");
@@ -96,6 +127,10 @@ const RegisterPage = () => {
         setVerificationCode(generatedCode);
         setIsCodeSent(true); // Set the flag to true after sending the code
 
+        const currentTime = Date.now();
+        const expirationTime = currentTime + 3 * 60 * 1000; // 3 minute    
+        setExpirationTime(expirationTime);
+
         // Send verification code via email
         try {
           emailjs
@@ -107,43 +142,49 @@ const RegisterPage = () => {
             )
             .then(
               (response) => {
-                setMessage("Verification email sent successfully!");
-                console.log("Email sent successfully", response);
+                setMessage("Verification code sent successfully!");
+                console.log("Code sent successfully", response);
               },
               (error) => {
-                setMessage("Failed to send verification email.");
-                console.error("Error sending email", error);
+                setMessage("Failed to send verification code.");
+                console.error("Error sending code", error);
               }
             );
         } catch (error) {
-          setError("Error sending verification email: " + error.message);
+          setError("Error sending verification code: " + error.message);
           return;
         }
       } else {
-        try {
-          // Send POST request to the backend to register user
-          const response = await axios.post('http://localhost/webPHP/signUp.php', {
-            firstname,
-            lastname,
-            email,
-            password,
-            role,
-            verification_code: verificationCode,
-          });
+        const currentTime = Date.now();
 
-          // Handle response from the backend
-          if (response.data.success) {
-            notifysuccess(); // Show success toast
-            navigate('/Login'); // Navigate to Login page
-          } else {
-            notifyfail(); // Show error toast
-            setError(response.data.message); // Set error message
+      if (currentTime > expirationTime ){
+        setError("Verification code has expired. Please resend the code.");
+        return;
+      } else {
+          try {
+            // Send POST request to the backend to register user
+            const response = await axios.post('http://localhost/webPHP/signUp.php', {
+              firstname,
+              lastname,
+              email,
+              password,
+              role,
+              verification_code: verificationCode,
+            });
+
+            // Handle response from the backend
+            if (response.data.success) {
+              notifysuccess(); // Show success toast
+              navigate('/Login'); // Navigate to Login page
+            } else {
+              notifyfail(); // Show error toast
+              setError(response.data.message); // Set error message
+            }
+          } catch (error) {
+            setError("Sign Up failed: " + error.message); // Handle request error
           }
-        } catch (error) {
-          setError("Sign Up failed: " + error.message); // Handle request error
         }
       }
-
     }
   };
 
@@ -154,7 +195,7 @@ const RegisterPage = () => {
           <div className="border border-gray-300 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="mb-4">
-                <h1 className="font-logo text-5xl pb-4 text-center">Tasty</h1>
+                <h1 className="font-logo text-5xl pb-1 text-center">Tasty</h1>
                 <h3 className="text-gray-800 text-2xl font-extrabold text-center">Sign Up</h3>
               </div>
 
@@ -162,14 +203,14 @@ const RegisterPage = () => {
                 <div>
                   <label className="text-gray-800 text-sm mb-1 block">First name <span className="text-red-500">*</span></label>
                   <div className="relative flex items-center">
-                    <input name="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter first name" />
+                    <input name="firstname" value={firstname} onChange={(e) => setFirstname(validator.trim(e.target.value))} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter first name" />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-gray-800 text-sm mb-1 block">Last name <span className="text-red-500">*</span></label>
                   <div className="relative flex items-center">
-                    <input name="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter last name" />
+                    <input name="lastname" value={lastname} onChange={(e) => setLastname(validator.trim(e.target.value))} type="text" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter last name" />
                   </div>
                 </div>
               </div>
@@ -177,23 +218,52 @@ const RegisterPage = () => {
               <div>
                 <label className="text-gray-800 text-sm mb-1 block">Email <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center">
-                  <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
+                  <input name="email" value={email} onChange={(e) => setEmail(validator.trim(e.target.value))} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
                 </div>
               </div>
 
               <div>
                 <label className="text-gray-800 text-sm mb-1 block">Password <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
-                  <input name="password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
+                  <input name="password" value={password} onChange={(e) => setPassword(e.target.value)}  type={showPassword ? "text" : "password"} className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
                 </div>
+
+                <div className="ml-0.5">
+                <label className="flex items-center text-sm text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                    className="mr-2 accent-teal-600"
+                  />
+                  Show Password
+                </label>
               </div>
+
+              </div>
+
+
 
               <div>
                 <label className="text-gray-800 text-sm mb-1 block">Confirm Password <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
-                  <input name="password" value={cpassword} onChange={(e) => setCpassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Confirm password" />
+                  <input name="password" value={cpassword} onChange={(e) => setCpassword(e.target.value)}  type={showPasswordC ? "text" : "password"} className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Confirm password" />
                 </div>
+
+                <div className="ml-0.5">
+                <label className="flex items-center text-sm text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={showPasswordC}
+                    onChange={() => setShowPasswordC(!showPasswordC)}
+                    className="mr-2 accent-teal-600"
+                  />
+                  Show Password
+                </label>
               </div>
+              </div>
+
+
 
               <div>
               <label className="text-gray-800 text-sm mb-1 block">Select Role <span className="text-red-500">*</span></label>
@@ -203,8 +273,8 @@ const RegisterPage = () => {
                   <option value="food_enthusiast">Food Enthusiast</option>
                 </select>
               </div>
-              
 
+         
               {isCodeSent && (
                 
                 <div>

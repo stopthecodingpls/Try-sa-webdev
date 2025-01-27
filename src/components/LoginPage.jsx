@@ -9,11 +9,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [mistakeCount, setMistakeCount] = useState(0);
+  const [locked, setLocked] = useState(false); // lockout state
 
   const notifysuccess = (msg) => toast.success(msg, { position: "top-center", toastId: 'success1' });
   const notifyfail = () => toast.error("Account Does Not Exist!", { position: "top-center" });
 
-
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +38,17 @@ const LoginPage = () => {
   }, [msg]);
 
   const handleLogin = async (e) => { 
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
+    if (mistakeCount >= 3) { 
+      setLocked(true); 
+      setTimeout(() => {
+        setMistakeCount(0); 
+        setLocked(false); 
+      }, 30000); // Lock for 30 seconds 
+      setError("Too many failed attempts. Please try again in 30 seconds.");
+      return;
+    }
+
     if (email !== "" && password !== "") {
       try {
         const response = await axios.post('http://localhost/webPHP/login.php', {
@@ -47,18 +60,20 @@ const LoginPage = () => {
         if (response.data.success === true) {
             const loadingToast = toast.loading('Loading 🍕🥪🍔', { position: "top-center", toastId: 'loading1' });
             setError("");
+            setMistakeCount(0);
             setTimeout(() => {
             localStorage.setItem("login", true);
             localStorage.setItem('email', email);
             localStorage.setItem('firstname', response.data.firstname);
             localStorage.setItem('role', response.data.role); 
-            toast.dismiss(loadingToast);
+            toast.dismiss(loadingToast);  
             notifysuccess(`Welcome, ${response.data.firstname}!`); // Show success toast with user's name
             navigate('/Home'); // Navigate to Home page 
           }, 2000);
         } else if (response.data.success === false) {
           notifyfail(); // Show error toast
         } else {
+          setMistakeCount(mistakeCount + 1);
           setError(response.data.message); // Handle request error
         }
       }catch (error) {
@@ -83,17 +98,29 @@ const LoginPage = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Email<span className="text-red-500">*</span></label>
+                <label className="text-gray-800 text-sm mb-1 block">Email <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center">
                   <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Password<span className="text-red-500">*</span></label>
+                <label className="text-gray-800 text-sm mb-1 block">Password <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
-                  <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
+                  <input value={password} onChange={(e) => setPassword(e.target.value)}  type={showPassword ? "text" : "password"} className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
                 </div>
+              </div>
+
+              <div className="mt-2 ml-0.5">
+                <label className="flex items-center text-sm text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                    className="mr-2 accent-teal-600"
+                  />
+                  Show Password
+                </label>
               </div>
 
               <p className='text-center'>
