@@ -52,56 +52,73 @@ const RecipeInfos = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const isEmptyOrSpaces = (str) => !str || str.trim().length === 0;
-
+    
+        const isEmptyOrSpaces = (str) => !str || str.trim() === "" || str[0] === " ";
+    
         if (isEmptyOrSpaces(recipeName)) {
-        toast.error("Recipe Name cannot be empty or spaces only!", {
-            className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
-        });
-        return;
+            toast.error("Recipe Name cannot be empty, spaces only, or start with spaces!", {
+                className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+            });
+            return;
         }
         if (isEmptyOrSpaces(ingredients)) {
-        toast.error("Ingredients cannot be empty or spaces only!", {
-            className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
-        });
-        return;
+            toast.error("Ingredients cannot be empty, spaces only, or start with spaces!", {
+                className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+            });
+            return;
         }
         if (isEmptyOrSpaces(measurements)) {
-        toast.error("Measurements cannot be empty or spaces only!", {
-            className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
-        });
-        return;
+            toast.error("Measurements cannot be empty, spaces only, or start with spaces!", {
+                className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+            });
+            return;
         }
         if (isEmptyOrSpaces(instructions)) {
-        toast.error("Instructions cannot be empty or spaces only!", {
-            className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
-        });
-        return;
+            toast.error("Instructions cannot be empty, spaces only, or start with spaces!", {
+                className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+            });
+            return;
         }
-
-        const formData = new FormData();
-        formData.append("recipeName", recipeName);
-        formData.append("dishImage", dishImage);
-        formData.append("ingredients", ingredients);
-        formData.append("measurements", measurements);
-        formData.append("instructions", instructions);
-        formData.append("creator", creator);
-
+    
         try {
-        const response = await fetch("http://localhost/webPHP/submit-recipe.php", {
-            method: "POST",
-            body: formData,
-        });
+            const checkResponse = await fetch(
+                `http://localhost/webPHP/check-recipe.php?creator=${encodeURIComponent(creator)}&recipeName=${encodeURIComponent(recipeName)}`
+            );
+    
+            const checkResult = await checkResponse.json();
+            
+            if (checkResult.exists) {
+                toast.error("You already have a recipe with this name!", {
+                    className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+                });
+                return;
+            }
+    
+            const formattedIngredients = ingredients.split(/[\s,]+/).filter(Boolean).join(", ");
+            const formattedMeasurements = measurements.split(/[\s,]+/).filter(Boolean).join(", ");
+            const formattedInstructions = instructions.split(/[\s,]+/).filter(Boolean).join(", ");
 
-        if (response.ok) {
-            notifysuccess();
-            navigate("/AddRecipes");
-        } else {
-            notifyfail();
-        }
+            const formData = new FormData();
+            formData.append("recipeName", recipeName);
+            formData.append("dishImage", dishImage);
+            formData.append("ingredients", formattedIngredients);
+            formData.append("measurements", formattedMeasurements);
+            formData.append("instructions", formattedInstructions);
+            formData.append("creator", creator);
+    
+            const response = await fetch("http://localhost/webPHP/submit-recipe.php", {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                notifysuccess();
+                navigate("/AddRecipes");
+            } else {
+                notifyfail();
+            }
         } catch (error) {
-        notifyfail();
+            notifyfail();
         }
     };
 
@@ -116,7 +133,7 @@ const RecipeInfos = () => {
                 <h1 className="font-logo text-4xl">Recipe Information</h1>
                 <p>Here you can add detailed information about your recipe.</p>
                 <div className="border-b border-black my-4"></div>
-                <label htmlFor="recipeName">Recipe Name:</label>
+                <label htmlFor="recipeName">Recipe Name:<span style={{ color: "red" }}>*</span></label>
                 <input
                 type="text"
                 name="recipeName"
@@ -130,19 +147,23 @@ const RecipeInfos = () => {
 
             {/* Dish Image */}
             <div className="form-group">
-                <label htmlFor="dishImage">Dish Image:</label>
+                <label htmlFor="dishImage">Dish Image:<span style={{ color: "red" }}>*</span></label>
                 <input
                 type="file"
                 name="dishImage"
                 id="dishImage"
                 accept="image/*"
                 onChange={handleImageUpload}
+                required
                 />
             </div>
 
             {/* Ingredients */}
             <div className="form-group">
-                <label htmlFor="ingredients">Ingredients:</label>
+                <label htmlFor="ingredients">
+                    Ingredients: 
+                    <span style={{ color: "red" }}>* (Separate each ingredient using a comma or space)</span>
+                </label>
                 <textarea
                 name="ingredients"
                 id="ingredients"
@@ -155,7 +176,10 @@ const RecipeInfos = () => {
 
             {/* Measurements */}
             <div className="form-group">
-                <label htmlFor="measurements">Measurements:</label>
+                <label htmlFor="measurements">
+                    Measurements: 
+                    <span style={{ color: "red" }}>* (Separate each measurement using a comma or space)</span>
+                </label>
                 <textarea
                 name="measurements"
                 id="measurements"
@@ -168,7 +192,10 @@ const RecipeInfos = () => {
 
             {/* Instructions */}
             <div className="form-group">
-                <label htmlFor="instructions">Instructions:</label>
+                <label htmlFor="instructions">
+                    Instructions: 
+                    <span style={{ color: "red" }}>* (Separate each step using a comma or space)</span>
+                </label>
                 <textarea
                 name="instructions"
                 id="instructions"

@@ -116,6 +116,11 @@ const ViewProfile = () => {
     };
 
     const handleSave = async () => {
+        if (!validateInput(updatedFirstName) || !validateInput(updatedLastName)) {
+            toast.error("First name and last name cannot be empty, contain only spaces, or start with spaces.");
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost/webPHP/updateProfile.php", {
                 method: "POST",
@@ -144,6 +149,10 @@ const ViewProfile = () => {
             console.error("Error updating profile:", error);
             toast.error("An error occurred. Please try again.");
         }
+    };
+
+    const validateInput = (input) => {
+        return input.trim() !== "" && input[0] !== " ";
     };
 
     const handleCancel = () => {
