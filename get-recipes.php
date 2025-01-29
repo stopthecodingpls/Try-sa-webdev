@@ -24,6 +24,7 @@ $query = "
         r.measurements, 
         r.instructions, 
         r.dish_image,
+        r.creator,
         rv.Ratings,
         rv.Feedback
     FROM 
@@ -51,6 +52,7 @@ if ($result->num_rows > 0) {
                 "measurements" => $row["measurements"],
                 "instructions" => $row["instructions"],
                 "dish_image" => $row["dish_image"],
+                "creator" => $row["creator"],
                 "feedback" => []
             ];
         }

@@ -248,18 +248,32 @@ const CategoryList = () => {
       toast.error('Feedback cannot be empty or just spaces.');
       return;
     }
-
+  
     if (!rating) {
       toast.error('Please provide a rating.');
       return;
     }
-
+  
+    const loggedInEmail = localStorage.getItem('email');
+  
+    if (!loggedInEmail) {
+      toast.error('User not logged in.');
+      return;
+    }
+  
+    if (selectedRecipe && selectedRecipe.creator_email === loggedInEmail) {
+      toast.error("You can't review your own recipe.");
+      return;
+    }
+  
     try {
       const response = await axios.post('http://localhost/webPHP/save_feedback.php', {
         Recipe_id: recipeId,
         Feedback: feedbackText,
         Rating: rating,
+        user_email: loggedInEmail,
       });
+  
       if (response.data.success) {
         toast.success('Feedback submitted successfully!');
         closeModal();
@@ -267,7 +281,7 @@ const CategoryList = () => {
           window.location.reload();
         }, 300);
       } else {
-        toast.error(`Failed to submit feedback: ${response.data.message}`);
+        toast.error(`${response.data.message}`);
       }
     } catch (error) {
       toast.error('Error submitting feedback.');

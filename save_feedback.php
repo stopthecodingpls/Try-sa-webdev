@@ -4,7 +4,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Database connection details
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -12,16 +11,13 @@ $dbname = "webdev";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check database connection
 if ($conn->connect_error) {
     die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
 }
 
-// Debugging: Check the raw input
 $rawInput = file_get_contents("php://input");
-$data = json_decode($rawInput, true); // Decode JSON data into an associative array
+$data = json_decode($rawInput, true);
 
-// Debugging output for validation
 if ($data === null) {
     echo json_encode([
         "success" => false,
@@ -32,13 +28,12 @@ if ($data === null) {
     exit;
 }
 
-// Extract variables from JSON data
 $Recipe_id = $data['Recipe_id'] ?? null;
 $Feedback = $data['Feedback'] ?? null;
 $Rating = $data['Rating'] ?? null;
+$user_email = $data['user_email'] ?? null;
 
-// Validate input data
-if (empty($Recipe_id) || empty($Feedback) || empty($Rating)) {
+if (empty($Recipe_id) || empty($Feedback) || empty($Rating) || empty($user_email)) {
     echo json_encode([
         "success" => false,
         "message" => "Invalid input: Recipe_id, Feedback, and Rating are required",
@@ -47,7 +42,19 @@ if (empty($Recipe_id) || empty($Feedback) || empty($Rating)) {
     exit;
 }
 
-// Insert data into the database
+$checkCreatorQuery = "SELECT creator FROM recipes WHERE id = ?";
+$stmt = $conn->prepare($checkCreatorQuery);
+$stmt->bind_param("i", $Recipe_id);
+$stmt->execute();
+$stmt->bind_result($creator);
+$stmt->fetch();
+$stmt->close();
+
+if ($creator === $user_email) {
+    echo json_encode(["success" => false, "message" => "You cannot review your own recipe."]);
+    exit;
+}
+
 $stmt = $conn->prepare("INSERT INTO review (Recipe_id, Feedback, Ratings) VALUES (?, ?, ?)");
 if (!$stmt) {
     echo json_encode([
@@ -66,7 +73,6 @@ if ($stmt->execute()) {
     echo json_encode(["success" => false, "message" => "Failed to insert feedback", "error" => $stmt->error]);
 }
 
-// Close the statement and connection
 $stmt->close();
 $conn->close();
 ?>
