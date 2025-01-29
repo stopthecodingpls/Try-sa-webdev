@@ -44,7 +44,7 @@ while ($row = $recipeResult->fetch_assoc()) {
 }
 
 // Fetch feedbacks for user's recipes
-$feedbackQuery = "SELECT Feedback AS text, Ratings AS rating, Recipe_id FROM review WHERE Recipe_id IN (SELECT id FROM recipes WHERE creator = ?)";
+$feedbackQuery = "SELECT Feedback AS text, Ratings AS rating, Recipe_id, Creator FROM review WHERE Recipe_id IN (SELECT id FROM recipes WHERE creator = ?)";
 $stmt = $conn->prepare($feedbackQuery);
 $stmt->bind_param("s", $email);
 $stmt->execute();

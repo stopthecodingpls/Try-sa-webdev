@@ -255,8 +255,9 @@ const CategoryList = () => {
     }
   
     const loggedInEmail = localStorage.getItem('email');
+    const firstname = localStorage.getItem('firstname');
   
-    if (!loggedInEmail) {
+    if (!loggedInEmail || !firstname) {
       toast.error('User not logged in.');
       return;
     }
@@ -272,6 +273,7 @@ const CategoryList = () => {
         Feedback: feedbackText,
         Rating: rating,
         user_email: loggedInEmail,
+        firstname: firstname,
       });
   
       if (response.data.success) {

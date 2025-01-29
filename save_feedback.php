@@ -32,11 +32,12 @@ $Recipe_id = $data['Recipe_id'] ?? null;
 $Feedback = $data['Feedback'] ?? null;
 $Rating = $data['Rating'] ?? null;
 $user_email = $data['user_email'] ?? null;
+$firstname = $data['firstname'] ?? null; // Get first name from request
 
-if (empty($Recipe_id) || empty($Feedback) || empty($Rating) || empty($user_email)) {
+if (empty($Recipe_id) || empty($Feedback) || empty($Rating) || empty($user_email) || empty($firstname)) {
     echo json_encode([
         "success" => false,
-        "message" => "Invalid input: Recipe_id, Feedback, and Rating are required",
+        "message" => "Invalid input: Recipe_id, Feedback, Rating, user_email, and firstname are required",
         "receivedData" => $data
     ]);
     exit;
@@ -55,7 +56,8 @@ if ($creator === $user_email) {
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO review (Recipe_id, Feedback, Ratings) VALUES (?, ?, ?)");
+// Insert feedback into the review table, storing the firstname in the Creator column
+$stmt = $conn->prepare("INSERT INTO review (Recipe_id, Feedback, Ratings, Creator) VALUES (?, ?, ?, ?)");
 if (!$stmt) {
     echo json_encode([
         "success" => false,
@@ -65,7 +67,7 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("isi", $Recipe_id, $Feedback, $Rating);
+$stmt->bind_param("isis", $Recipe_id, $Feedback, $Rating, $firstname);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Feedback saved successfully"]);

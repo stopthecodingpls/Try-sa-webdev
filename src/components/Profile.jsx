@@ -166,6 +166,11 @@ const ViewProfile = () => {
         setIsEditing(false);
     };
 
+    const maskName = (name) => {
+        if (!name || name.length < 2) return name;
+        return name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
+    };
+
     const filteredFeedbacks = feedbacks.filter(feedback => {
         const recipeName = recipes.find(recipe => recipe.id === feedback.Recipe_id)?.recipe_name || "";
         return recipeName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -300,6 +305,9 @@ const ViewProfile = () => {
 
                                 return (
                                     <div key={index} className="feedback-item">
+                                        <p>
+                                            <strong>Feedback Sender:</strong> {maskName(feedback.Creator || "Unknown")}
+                                        </p>
                                         <p>
                                             <strong>Recipe:</strong> {recipeName}
                                         </p>
