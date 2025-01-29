@@ -28,14 +28,17 @@ if ($method == 'POST') {
         die(json_encode(["success" => false, "message" => "Missing required fields"]));
     }
 
+    
     $destPath = '';
     if (isset($_FILES['dishImage']) && $_FILES['dishImage']['error'] == 0) {
         $fileTmpPath = $_FILES['dishImage']['tmp_name'];
         $fileName = basename($_FILES['dishImage']['name']);
-        $uploadDir = 'uploads/';
-        $destPath = $uploadDir . $fileName;
+        $uploadDir = 'C:\xampp\htdocs\webPHP\uploads\\';
+        $destPath = $fileName;
 
-        if (!move_uploaded_file($fileTmpPath, $destPath)) {
+        $fullPath = $uploadDir . $fileName;
+
+        if (!move_uploaded_file($fileTmpPath, $fullPath)) {
             die(json_encode(["success" => false, "message" => "Failed to upload image."]));
         }
     }

@@ -15,10 +15,10 @@ const RecipeInfos = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedFirstName = localStorage.getItem("firstname");
+        const storedEmail = localStorage.getItem("email");
 
-        if (storedFirstName) {
-        setCreator(storedFirstName);
+        if (storedEmail) {
+        setCreator(storedEmail);
         } else {
         setCreator("Anonymous User");
         }
@@ -54,6 +54,11 @@ const RecipeInfos = () => {
         e.preventDefault();
     
         const isEmptyOrSpaces = (str) => !str || str.trim() === "" || str[0] === " ";
+        const isImage = (file) => {
+            const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            return !file || (file && allowedImageTypes.includes(file.type));
+        };
+        
     
         if (isEmptyOrSpaces(recipeName)) {
             toast.error("Recipe Name cannot be empty, spaces only, or start with spaces!", {
@@ -79,6 +84,15 @@ const RecipeInfos = () => {
             });
             return;
         }
+
+        if (!isImage(dishImage)) {
+            toast.error("Only Upload Images!", {
+                className: "bg-red-500 text-white font-semibold p-3 rounded-lg shadow-lg",
+            });
+            return;
+        }
+        
+
     
         try {
             const checkResponse = await fetch(
@@ -154,7 +168,6 @@ const RecipeInfos = () => {
                 id="dishImage"
                 accept="image/*"
                 onChange={handleImageUpload}
-                required
                 />
             </div>
 

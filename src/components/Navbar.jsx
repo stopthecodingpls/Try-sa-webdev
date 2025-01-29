@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import "./Css/Navbar.css";
 
 const Navbar = () => {
@@ -40,22 +40,22 @@ const Navbar = () => {
           </div>
           <ul className={`nav-links ${menuActive ? "active" : ""}`}>
             <li className={isActive("/Home")}>
-              <a href="/Home">Home</a>
+                <Link to="/Home">Home</Link>
             </li>
             <li className={isActive("/Category")}>
-              <a href="/Category">Recipes</a>
+                <Link to="/Category">Recipes</Link>
             </li>
             {role !== "food_enthusiast" && (
               <li className={isActive("/AddRecipes")}>
-                <a href="/AddRecipes">Add Recipes</a>
+                <Link to="/AddRecipes">Add Recipes</Link>
               </li>
             )}
             <li className={isActive("/AboutUs")}>
-              <a href="/AboutUs">About Us</a>
+                <Link to="/AboutUs">About Us</Link>
             </li>
             {role !== "food_enthusiast" && (
               <li className={isActive("/Profile")}>
-                <a href="/Profile">Profile</a>
+                <Link to="/Profile">Profile</Link>
               </li>
             )}
             <li>

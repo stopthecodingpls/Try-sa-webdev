@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import FormImage from '../assets/images/FormImage.svg';
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -133,7 +134,7 @@ const LoginPage = () => {
                 </button>
               </div>
 
-              <p className="text-sm !mt-8 text-center text-gray-800">Don't have an account? <a href="/register" className="text-[#2dc978] font-semibold hover:underline ml-1 whitespace-nowrap">Sign up</a></p>
+              <p className="text-sm !mt-8 text-center text-gray-800">Don't have an account?  <Link to="/register" className="text-[#2dc978] font-semibold hover:underline ml-1 whitespace-nowrap">Sign up </Link></p>
             </form>
           </div>
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-2 ">

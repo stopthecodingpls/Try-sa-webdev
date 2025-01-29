@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import SignUpImage from '../assets/images/formimageReg.svg';
 import validator from "validator";
 
@@ -223,9 +223,9 @@ const RegisterPage = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-1 block">Password <span className="text-red-500">*</span></label>
+                <label className="text-gray-800 text-sm mb-1 block">Password  <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center ">
-                  <input name="password" value={password} onChange={(e) => setPassword(e.target.value)}  type={showPassword ? "text" : "password"} className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password" />
+                  <input name="password" value={password} onChange={(e) => setPassword(e.target.value)}  type={showPassword ? "text" : "password"} className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter password (At least 8 characters)" />
                 </div>
 
                 <div className="ml-0.5">
@@ -262,8 +262,6 @@ const RegisterPage = () => {
                 </label>
               </div>
               </div>
-
-
 
               <div>
               <label className="text-gray-800 text-sm mb-1 block">Select Role <span className="text-red-500">*</span></label>
@@ -309,7 +307,7 @@ const RegisterPage = () => {
                 </button>
               </div>
 
-              <p className="text-sm !mt-8 text-center text-gray-800">Already have an account? <a href="/login" className="text-[#2dc978] font-semibold hover:underline ml-1 whitespace-nowrap">Sign in</a></p>
+              <p className="text-sm !mt-8 text-center text-gray-800">Already have an account? <Link to="/login" className="text-[#2dc978] font-semibold hover:underline ml-1 whitespace-nowrap">Sign in</Link></p>
             </form>
           </div>
           <div className="lg:h-[400px] md:h-[300px] max-md:mt-2 ">

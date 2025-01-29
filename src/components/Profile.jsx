@@ -18,9 +18,9 @@ const ViewProfile = () => {
 
     useEffect(() => {
         const fetchProfileData = async () => {
-            const firstname = localStorage.getItem("firstname");
-            if (!firstname) {
-                console.error("Firstname not found in localStorage");
+            const email = localStorage.getItem("email");
+            if (!email) {
+                console.error("Email not found in localStorage");
                 setLoading(false);
                 return;
             }
@@ -31,7 +31,7 @@ const ViewProfile = () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ firstname }),
+                    body: JSON.stringify({ email }),
                 });
 
                 const data = await response.json();

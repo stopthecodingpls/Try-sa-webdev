@@ -63,12 +63,12 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
 
         <div className="flex justify-center my-4">
           <img
-            src={`http://localhost/webPHP/${recipe.dish_image}`}
+            src={`http://localhost/webPHP/uploads/${recipe.dish_image}`}
             alt={recipe.recipe_name}
             className="w-90 h-80 object-cover rounded-lg mb-4"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/150";
+              e.target.src = "http://localhost/webPHP/uploads/NoImage.png";
             }}
           />
         </div>
@@ -265,7 +265,7 @@ const CategoryList = () => {
         closeModal();
         setTimeout(() => {
           window.location.reload();
-        }, 100);
+        }, 300);
       } else {
         toast.error(`Failed to submit feedback: ${response.data.message}`);
       }
@@ -321,8 +321,8 @@ const CategoryList = () => {
               {recipes.map((recipe) => {
                 const { id, recipe_name, dish_image, feedback } = recipe;
                 const imageUrl = dish_image
-                  ? `http://localhost/webPHP/${dish_image}`
-                  : "https://via.placeholder.com/150";
+                  ? `http://localhost/webPHP/uploads/${dish_image}`
+                  : "http://localhost/webPHP/uploads/NoImage.png";
                 const averageRating = calculateAverageRating(feedback);
                 return (
                   <div

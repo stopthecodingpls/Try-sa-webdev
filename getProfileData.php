@@ -18,24 +18,24 @@ if ($conn->connect_error) {
 // Get data from the request
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['firstname'])) {
-    die(json_encode(["error" => "Firstname not provided."]));
+if (!isset($data['email'])) {
+    die(json_encode(["error" => "Email not provided."]));
 }
 
-$firstname = $data['firstname'];
+$email = $data['email'];
 
 // Fetch user details
-$userQuery = "SELECT firstname, lastname, email FROM users WHERE firstname = ?";
+$userQuery = "SELECT firstname, lastname, email FROM users WHERE email = ?";
 $stmt = $conn->prepare($userQuery);
-$stmt->bind_param("s", $firstname);
+$stmt->bind_param("s", $email);
 $stmt->execute();
 $userResult = $stmt->get_result();
 $user = $userResult->fetch_assoc();
 
-// Fetch recipes where creator matches firstname
+// Fetch recipes where creator matches email
 $recipeQuery = "SELECT id, recipe_name FROM recipes WHERE creator = ?";
 $stmt = $conn->prepare($recipeQuery);
-$stmt->bind_param("s", $firstname);
+$stmt->bind_param("s", $email);
 $stmt->execute();
 $recipeResult = $stmt->get_result();
 $recipes = [];
@@ -46,7 +46,7 @@ while ($row = $recipeResult->fetch_assoc()) {
 // Fetch feedbacks for user's recipes
 $feedbackQuery = "SELECT Feedback AS text, Ratings AS rating, Recipe_id FROM review WHERE Recipe_id IN (SELECT id FROM recipes WHERE creator = ?)";
 $stmt = $conn->prepare($feedbackQuery);
-$stmt->bind_param("s", $firstname);
+$stmt->bind_param("s", $email);
 $stmt->execute();
 $feedbackResult = $stmt->get_result();
 $feedbacks = [];
