@@ -317,7 +317,7 @@ const CategoryList = () => {
           {recipes.length === 0 ? (
             <p className="text-center">No recipes available</p>
           ) : (
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {recipes.map((recipe) => {
                 const { id, recipe_name, dish_image, feedback } = recipe;
                 const imageUrl = dish_image
@@ -328,7 +328,7 @@ const CategoryList = () => {
                   <div
                     className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105"
                     key={id}
-                    style={{ width: "300px" }}
+                    style={{ width: "280px" }}
                     onClick={() => openModal(recipe)}
                   >
                     <img
