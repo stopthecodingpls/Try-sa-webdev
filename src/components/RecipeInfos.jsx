@@ -15,10 +15,10 @@ const RecipeInfos = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedFirstName = localStorage.getItem("firstname");
+        const storedEmail = localStorage.getItem("email");
 
-        if (storedFirstName) {
-        setCreator(storedFirstName);
+        if (storedEmail) {
+        setCreator(storedEmail);
         } else {
         setCreator("Anonymous User");
         }
