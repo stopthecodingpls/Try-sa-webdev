@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Css/Navbar.css";
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const userRole = localStorage.getItem('role'); 
+    const userRole = localStorage.getItem("role");
     setRole(userRole);
   }, []);
 
@@ -18,45 +19,78 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
+    setIsModalOpen(true);
   };
 
-  const firstName = localStorage.getItem("firstName");
+  const confirmLogout = () => {
+    localStorage.clear();
+    navigate("/");
+    setIsModalOpen(false);
+  };
 
-  const isActive = (path) => location.pathname === path ? "active-link" : "";
+  const isActive = (path) => (location.pathname === path ? "active-link" : "");
 
   return (
-    <nav className="navbar">
-      <div className="font-logo text-4xl">Tasty</div>
-      <div className="hamburger" onClick={toggleMenu}>
-        ☰
+    <>
+      <div className={`${isModalOpen ? "pointer-events-none" : ""}`}>
+        <nav className="navbar">
+          <div className="font-logo text-4xl">Tasty</div>
+          <div className="hamburger" onClick={toggleMenu}>
+            ☰
+          </div>
+          <ul className={`nav-links ${menuActive ? "active" : ""}`}>
+            <li className={isActive("/Home")}>
+              <a href="/Home">Home</a>
+            </li>
+            <li className={isActive("/Category")}>
+              <a href="/Category">Recipes</a>
+            </li>
+            {role !== "food_enthusiast" && (
+              <li className={isActive("/AddRecipes")}>
+                <a href="/AddRecipes">Add Recipes</a>
+              </li>
+            )}
+            <li className={isActive("/AboutUs")}>
+              <a href="/AboutUs">About Us</a>
+            </li>
+            {role !== "food_enthusiast" && (
+              <li className={isActive("/Profile")}>
+                <a href="/Profile">Profile</a>
+              </li>
+            )}
+            <li>
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <ul className={`nav-links ${menuActive ? "active" : ""}`}>
-        <li className={isActive("/Home")}>
-          <a href="/Home">Home</a>
-        </li>
-        <li className={isActive("/Category")}>
-          <a href="/Category">Recipes</a>
-        </li>
-        {role !== 'food_enthusiast' && (
-          <li className={isActive("/AddRecipes")}>
-            <a href="/AddRecipes">Add Recipes</a>
-          </li>
-        )}
-        <li className={isActive("/AboutUs")}>
-          <a href="/AboutUs">About Us</a>
-        </li>
-        {role !== 'food_enthusiast' && (
-        <li className={isActive("/Profile")}>
-          <a href="/Profile">Profile</a>
-        </li>
-        )}
-        <li>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </li>
-      </ul>
-    </nav>
+
+      {/* Modal Overlay */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80 relative z-50">
+            <h2 className="text-3xl font-logo">Confirm Logout</h2>
+            <p className="mt-2 text-gray-600">Are you sure you want to logout?</p>
+            <div className="mt-4 flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                onClick={confirmLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
