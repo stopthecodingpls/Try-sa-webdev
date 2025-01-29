@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Css/Navbar.css";
 
 const Navbar = () => {
@@ -56,6 +56,11 @@ const Navbar = () => {
             {role !== "food_enthusiast" && (
               <li className={isActive("/Profile")}>
                 <Link to="/Profile">Profile</Link>
+              </li>
+            )}
+            {role !== "chef" && (
+              <li className={isActive("/ProfileFE")}>
+                <Link to="/ProfileFE">Profile</Link>
               </li>
             )}
             <li>

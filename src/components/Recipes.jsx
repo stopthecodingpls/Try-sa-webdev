@@ -34,6 +34,10 @@ const Recipes = () => {
     }
   }, [category]);
 
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
   // Fetch the full details of the selected recipe, including ingredients
   const fetchRecipeDetails = async (recipeName) => {
     try {
@@ -81,10 +85,6 @@ const Recipes = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleRatingClick = (rate) => {
-    setRating(rate);
-  };
-
   const filteredRecipesFavorites = recipes.filter((recipe) =>
     recipe.strMeal.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -119,6 +119,13 @@ const Recipes = () => {
           />
           <button className="search-button">🔍</button>
         </div>
+
+        <button
+          className="bg-green-500 text-white py-2 px-6 rounded hover:bg-green-600"
+          onClick={() => window.location.href = '/Category'}
+        >
+          Back
+        </button>
 
         <div className="recipes-header">
           <h1 className = "font-logo text-5xl pb-5 text-center">Recipes</h1>

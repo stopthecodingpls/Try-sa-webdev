@@ -25,7 +25,7 @@ if (!isset($data['email'])) {
 $email = $data['email'];
 
 // Fetch user details
-$userQuery = "SELECT firstname, lastname, email FROM users WHERE email = ?";
+$userQuery = "SELECT firstname, lastname, email, role FROM users WHERE email = ?";
 $stmt = $conn->prepare($userQuery);
 $stmt->bind_param("s", $email);
 $stmt->execute();

@@ -15,6 +15,7 @@ const ViewProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedFirstName, setUpdatedFirstName] = useState("");
     const [updatedLastName, setUpdatedLastName] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -76,6 +77,12 @@ const ViewProfile = () => {
             console.error("Error deleting recipe:", error);
             toast.error("An error occurred while deleting the recipe.");
         }
+    };
+
+    const getRoleDisplayName = (role) => {
+        if (role === "food_enthusiast") return "Food Enthusiast";
+        if (role === "chef") return "Chef";
+        return "Not specified";
     };
 
     const openModal = (recipeId) => {
@@ -159,6 +166,11 @@ const ViewProfile = () => {
         setIsEditing(false);
     };
 
+    const filteredFeedbacks = feedbacks.filter(feedback => {
+        const recipeName = recipes.find(recipe => recipe.id === feedback.Recipe_id)?.recipe_name || "";
+        return recipeName.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     if (loading) {
         return <div className="page-container"><p>Loading...</p></div>;
     }
@@ -199,6 +211,9 @@ const ViewProfile = () => {
                             </p>
                             <p>
                                 <strong>Email:</strong> {userData.email}
+                            </p>
+                            <p>
+                                <strong>Role:</strong> {getRoleDisplayName(userData.role)}
                             </p>
                             <div className="button-container text-right mr-2">
                                 {isEditing ? (
@@ -250,8 +265,15 @@ const ViewProfile = () => {
                 <div className="right-column">
                     <div className="feedback-section">
                         <h2 className="font-logo text-4xl">⭐ Feedbacks</h2>
-                        {feedbacks.length > 0 ? (
-                            feedbacks.slice(0, visibleFeedbackCount).map((feedback, index) => {
+                        <input
+                            type="text"
+                            placeholder="Search by recipe name..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="border-2 border-black px-2 rounded w-80 mx-auto"
+                        />
+                        {filteredFeedbacks.length > 0 ? (
+                            filteredFeedbacks.slice(0, visibleFeedbackCount).map((feedback, index) => {
                                 const recipeName = recipes.find(
                                     recipe => recipe.id === feedback.Recipe_id
                                 )?.recipe_name || "Unknown Recipe";
