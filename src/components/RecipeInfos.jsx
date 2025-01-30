@@ -110,7 +110,13 @@ const RecipeInfos = () => {
     
             const formattedIngredients = ingredients.split(/[\s,]+/).filter(Boolean).join(", ");
             const formattedMeasurements = measurements.split(/[\s,]+/).filter(Boolean).join(", ");
-            const formattedInstructions = instructions.split(/[\s,]+/).filter(Boolean).join(", ");
+            const formattedInstructions = instructions
+                .split(',')
+                .map(instr => instr.trim())
+                .filter(Boolean)
+                .join(', ');
+
+            
 
             const formData = new FormData();
             formData.append("recipeName", recipeName);

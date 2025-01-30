@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,12 +9,12 @@ import "./components/Css/App.css";
 import Home from "./components/Home";
 import LoginPage from "./components/LoginPage";
 import NoPage from "./components/NoPage";
-import Profile from "./components/Profile";
-import ProfileFE from "./components/ProfileFE";
 import Protected from "./components/Protected";
 import RecipeInfos from "./components/RecipeInfos";
 import Recipes from "./components/Recipes";
 import RegisterPage from "./components/RegisterPage";
+import Profile from "./components/Profile";
+import ProfileFE from "./components/ProfileFE";
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function App() {
           <Route path="/AboutUs" element={<Protected Component ={AboutUs} />} />
           <Route path="/Profile" element={<Protected Component={Profile} restrictedRole="food_enthusiast" redirectTo="/home" />} />
           <Route path="/ProfileFE" element={<Protected Component={ProfileFE} restrictedRole="chef" redirectTo="/home" />} />
+
 
           <Route path="*" element={<NoPage />} />
         </Routes>

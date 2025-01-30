@@ -38,7 +38,7 @@ const RecipeModal = ({ recipe, isOpen, onClose, handleFeedbackSubmit }) => {
     for (let i = 0; i < ingredientsArray.length; i++) {
       const ingredient = ingredientsArray[i];
       const measure = measurementsArray[i];
-      const instructions = instructionsArray[i];
+      const instructions = instructionsArray[i] ?? '';
       if (ingredient && ingredient.trim() !== '') {
         ingredients.push({ ingredient, measure, instructions });
       }

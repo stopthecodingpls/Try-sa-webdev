@@ -61,7 +61,7 @@ const RegisterPage = () => {
         }
     };
 
-    // Start a timer SalamatGPT
+    // Start a timer 
     updateRemainingTime(); 
     const timerId = setInterval(updateRemainingTime, 1000);
 
@@ -218,7 +218,7 @@ const RegisterPage = () => {
               <div>
                 <label className="text-gray-800 text-sm mb-1 block">Email <span className="text-red-500">*</span></label>
                 <div className="relative flex items-center">
-                  <input name="email" value={email} onChange={(e) => setEmail(validator.trim(e.target.value))} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" />
+                  <input name="email" value={email} onChange={(e) => setEmail(validator.trim(e.target.value))} type="email" required className="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-[#2dc978]" placeholder="Enter email" disabled={isCodeSent}  />
                 </div>
               </div>
 
